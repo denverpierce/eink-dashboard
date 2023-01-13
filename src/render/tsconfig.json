@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "strict": true,
+    "lib": [
+      "esnext"
+    ],
+    "module": "commonjs",
+    "declaration": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "typeRoots": ["node_modules/@types"],
+    "allowSyntheticDefaultImports": true,
+    "target": "ESNext",
+    "resolveJsonModule": true,
+    "outDir": "bin",
+    "sourceMap": false,  }
+}

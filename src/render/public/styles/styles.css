@@ -1,0 +1,47 @@
+.body-container {
+    width: 1304px;
+    height: 984px;
+    max-width: 1304px;
+    max-height: 984px;
+}
+
+.container {
+    width: 1304px;
+    height: 984px;
+    max-width: 1304px;
+    max-height: 984px;
+    outline: 1px solid black;
+    display: grid;
+    grid-auto-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "block-1 block-1 block-2 block-2"
+        "ten-day-forecast ten-day-forecast ten-day-forecast todays-weather"
+        "today-weather-curve today-weather-curve today-weather-curve todays-weather";
+}
+
+.block-1 {
+    grid-area: block-1;
+}
+
+.block-2 {
+    grid-area: block-2;
+}
+
+.ten-day-forecast {
+    grid-area: ten-day-forecast;
+}
+
+.todays-weather {
+    grid-area: todays-weather;
+}
+
+.today-weather-curve {
+    grid-area: today-weather-curve;
+}
+
+.highcharts-figure {
+    margin: 0;
+}

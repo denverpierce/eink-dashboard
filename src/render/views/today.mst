@@ -1,0 +1,117 @@
+<section class="day-forecast-section">
+    <style>
+        .solar {
+            display: flex;
+        }
+
+        table {
+            margin: 2rem auto 2rem 2rem;
+        }
+
+        thead {
+            display: none;
+        }
+
+        .bar {
+            width: 1.2rem;
+            height: 3rem;
+            border-bottom: 1px solid;
+        }
+
+        .bar-civil {
+            background-color: #cccccc;
+        }
+
+        .bar-nautical {
+            background-color: #888888;
+        }
+
+        .bar-astronomical {
+            background-color: #444444;
+        }
+
+        .bar-night {
+            background-color: black;
+        }
+
+        .bar-day {
+            background-color: #eeeeee;
+        }
+
+        .solar-time-top {
+            vertical-align: top;
+        }
+
+        .solar-time-bottom {
+            vertical-align: bottom;
+        }
+
+        .solar-time-middle {
+            vertical-align: middle;
+        }
+
+        .solar-spacer {
+            border-bottom: 1px solid;
+            width: 1rem;
+        }
+    </style>
+    <h2 class="header">Solar</h2>
+    <div class="solar">
+        <table cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Spacer Character</th>
+                    <th>Bar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="solar-time-top-top"></td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-night"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-top">7:00 am</td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-astronomical"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-top">7:30 am</td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-nautical"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-top">7:45 am</td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-civil"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-middle">8:00 am</td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-day"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-bottom">5:30 pm</td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-civil"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-bottom">6:00 pm</td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-nautical"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-bottom">6:30 pm</td>
+                    <td class="solar-spacer"></td>
+                    <td class="bar bar-astronomical"></td>
+                </tr>
+                <tr>
+                    <td class="solar-time-bottom"></td>
+                    <td class=""></td>
+                    <td class="bar bar-night"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
