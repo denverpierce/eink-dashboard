@@ -10,8 +10,9 @@ const port = 3000;
 let tenDay: TimeSeriesEntry[] = [];
 
 app.use(express.static('public'))
+app.use(express.static('node_modules/@fortawesome/fontawesome-free/'))
 app.get('/', function (req, res) {
-    res.sendFile('./index.html', { root: "/home/denver/dashy/src/render" });
+    res.sendFile('./index.html', { root: `${__dirname}/../` });
 });
 
 // Register '.mustache' extension with The Mustache Express
@@ -28,7 +29,6 @@ app.get('/tenDay', function (req, res) {
                 }
             })
         }, function (err, result) {
-            console.log(err)
             res.send(result)
         }));
 });
@@ -44,7 +44,21 @@ app.get('/today', function (req, res) {
                 }
             })
         }, function (err, result) {
-            console.log(err)
+            res.send(result)
+        }));
+});
+
+app.get('/pollen', function (req, res) {
+    var renderer = mustacheExpress('views', '.mst');
+    (renderer('views/pollen.mst',
+        {
+            days: tenDay.map((weather) => {
+                return {
+                    ...weather,
+                    time: moment.weekdaysShort(moment(weather.time).weekday())
+                }
+            })
+        }, function (err, result) {
             res.send(result)
         }));
 });
@@ -95,5 +109,4 @@ httpClient.get<GeoJSON.Feature<GeoJSON.Point, WeatherProperties>>(`https://api.m
                 data: ts.data
             }
         });
-    // console.log(tenDay)
 })

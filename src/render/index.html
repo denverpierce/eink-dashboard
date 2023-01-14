@@ -15,6 +15,7 @@
     <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="scripts/chart.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" rel="stylesheet">
 
     <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <style>
@@ -60,7 +61,7 @@
 <body class="body-container">
     <div class="container">
         <div class="block-1">something</div>
-        <div class="block-2">something 2</div>
+        <div class="block-2" hx-get="/pollen" hx-trigger="load">Pollen</div>
         <div class="ten-day-forecast" hx-get="/tenDay" hx-trigger="load">10 day</div>
         <div class="todays-weather" hx-get="/today" hx-trigger="load">today</div>
         <div class="today-weather-curve">

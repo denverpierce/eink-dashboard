@@ -11,8 +11,9 @@ const app = (0, express_1.default)();
 const port = 3000;
 let tenDay = [];
 app.use(express_1.default.static('public'));
+app.use(express_1.default.static('node_modules/@fortawesome/fontawesome-free/'));
 app.get('/', function (req, res) {
-    res.sendFile('./index.html', { root: "/home/denver/dashy/src/render" });
+    res.sendFile('./index.html', { root: `${__dirname}/../` });
 });
 // Register '.mustache' extension with The Mustache Express
 app.engine('mst', (0, mustache_express_1.default)('views', '.mst'));
@@ -26,7 +27,6 @@ app.get('/tenDay', function (req, res) {
             };
         })
     }, function (err, result) {
-        console.log(err);
         res.send(result);
     }));
 });
@@ -40,7 +40,19 @@ app.get('/today', function (req, res) {
             };
         })
     }, function (err, result) {
-        console.log(err);
+        res.send(result);
+    }));
+});
+app.get('/pollen', function (req, res) {
+    var renderer = (0, mustache_express_1.default)('views', '.mst');
+    (renderer('views/pollen.mst', {
+        days: tenDay.map((weather) => {
+            return {
+                ...weather,
+                time: moment_1.default.weekdaysShort((0, moment_1.default)(weather.time).weekday())
+            };
+        })
+    }, function (err, result) {
         res.send(result);
     }));
 });
@@ -64,5 +76,4 @@ httpClient.get(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=$
             data: ts.data
         };
     });
-    // console.log(tenDay)
 });

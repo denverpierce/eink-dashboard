@@ -1,0 +1,17 @@
+<section class="day-forecast-section">
+    <style>
+      .pollen {
+        display: flex;
+        flex-direction: row;
+      }
+      .pollen-section {
+        margin: 2rem auto;
+      }
+    </style>
+    <h2 class="header">Polllen</h2>
+    <div class="pollen">
+      <div class="pollen-section">Tree<i class="fa-solid fa-tree"></i></div>
+      <div class="pollen-section">Grass<i class="fa-solid fa-seedling"></i></div>
+      <div class="pollen-section">Weed<i class="fa-solid fa-plant-wilt"></i></div>
+    </div>
+</section>

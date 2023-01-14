@@ -1,10 +1,5 @@
 <section class="day-forecast-section">
     <style>
-        .header {
-            border-bottom: 1px solid;
-            margin-left: 2rem;
-        }
-
         .day-forecast-section {
             display: flex;
             flex-direction: column;

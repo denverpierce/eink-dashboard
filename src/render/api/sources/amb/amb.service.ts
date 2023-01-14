@@ -35,8 +35,8 @@ export const AmbClient = (token: string) => {
   const AMB_API = 'https://api.ambeedata.com';
   const httpClient = client.create();
   httpClient.interceptors.request.use(req => {
-    req.headers['x-api-key'] = token;
-    req.headers['Content-type'] = 'application/json';
+    req.headers!['x-api-key'] = token;
+    req.headers!['Content-type'] = 'application/json';
     return req;
   });
 
