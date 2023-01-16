@@ -58,23 +58,20 @@ app.get('/airQuality', function (req, res) {
     const airQualityPromises = [tomClient.getCurrentDataFields({
         lat: config.latitude,
         lng: config.longitude
-    }), tomClient.getCurrentDataFields({
+    }), tomClient.getTimeBoundedFields({
         lat: config.latitude,
         lng: config.longitude
     })]
     Promise.all(airQualityPromises)
-        .then((airQualityData) => {
-            console.log(airQualityData[0].timelines[0].intervals[0].values)
-            tomClient.getTimeBoundedFields({
-                lat: config.latitude,
-                lng: config.longitude
-            });
+        .then(([pollenData, airQualityData]) => {
+            const airQuality = {
+                ...pollenData.timelines[0].intervals[0].values,
+                ...airQualityData.timelines[0].intervals[0].values
+            }
+            console.log(airQuality)
             renderer('views/airQuality.mst',
                 {
-                    airQuality: {
-                        ...airQualityData[0].timelines[0].intervals[0].values,
-                        ...airQualityData[1].timelines[0].intervals[0].values
-                    }
+                    airQuality
                 }, function (err, result) {
                     res.send(result)
                 })

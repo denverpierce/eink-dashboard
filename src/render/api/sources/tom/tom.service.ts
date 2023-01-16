@@ -7,9 +7,12 @@ import { AmbLocation } from '../amb/amb.service';
 const tomIndexValues = z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)])
 
 const tomValue = z.object({
-  treeIndex: tomIndexValues,
-  weedIndex: tomIndexValues,
-  grassIndex: tomIndexValues
+  treeIndex: tomIndexValues.optional(),
+  weedIndex: tomIndexValues.optional(),
+  grassIndex: tomIndexValues.optional(),
+  epaIndex: z.number().optional(),
+  sunriseTime: z.string().optional(),
+  sunsetTime: z.string().optional()
 });
 const tomInterval = z.object({
   startTime: z.string(),
@@ -25,8 +28,16 @@ const tomTimelines = z.object({
 });
 const tomData = z.object({
   data: tomTimelines
-})
+});
+const tomError = z.object({
+  code: z.number(),
+  type: z.string(),
+  message: z.string()
+});
+
 export type TomData = z.infer<typeof tomTimelines>;
+type TomError = z.infer<typeof tomError>;
+const TomDataOrError = tomData.or(tomError)
 
 // eslint-disable-next-line import/prefer-default-export,@typescript-eslint/explicit-module-boundary-types
 export const TomClient = (token: string) => {
@@ -35,7 +46,7 @@ export const TomClient = (token: string) => {
 
   // TODO: make configurable
   const currentFields = ['treeIndex', 'grassIndex', 'weedIndex'];
-  const timeBoundedFields = ['epaIndex'];
+  const timeBoundedFields = ['epaIndex', 'sunriseTime', 'sunsetTime'];
 
   return {
     getCurrentDataFields(location: AmbLocation) {
@@ -43,10 +54,16 @@ export const TomClient = (token: string) => {
       // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {
-          const maybeParsedData = tomData.safeParse(r.data);
+          const maybeParsedData = TomDataOrError.safeParse(r.data);
           if (!maybeParsedData.success) {
             logger.error(`Tom Pollen parsing error: ${JSON.stringify(maybeParsedData.error)}`)
-            throw new Error('Data didnt parse correctly')
+            throw new Error('Data didnt parse correctly');
+          }
+          if ('code' in maybeParsedData.data) {
+            if (maybeParsedData.data.code === 429001) {
+              throw new Error('API Rate limit reached');
+            }
+            throw new Error('Unknown api error occured');
           }
           // console.log(maybeParsedData.data.data)
           return maybeParsedData.data.data;
@@ -66,7 +83,7 @@ export const TomClient = (token: string) => {
             logger.error(`Tom Pollen parsing error: ${JSON.stringify(maybeParsedData.error)}`)
             throw new Error('Data didnt parse correctly')
           }
-          console.log(maybeParsedData.data.data)
+          // console.log(maybeParsedData.data.data)
           return maybeParsedData.data.data;
         })
         .catch(e => {
