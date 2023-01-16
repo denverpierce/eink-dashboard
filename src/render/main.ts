@@ -3,14 +3,19 @@ import client from 'axios';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
 import moment from 'moment';
+import { tomClient } from './api/ApiMain';
 
 const app = express()
 const port = 3000;
 
 let tenDay: TimeSeriesEntry[] = [];
 
+const config = {
+    latitude: 36.0,
+    longitude: -96.0
+}
+
 app.use(express.static('public'))
-app.use(express.static('node_modules/@fortawesome/fontawesome-free/'))
 app.get('/', function (req, res) {
     res.sendFile('./index.html', { root: `${__dirname}/../` });
 });
@@ -33,9 +38,9 @@ app.get('/tenDay', function (req, res) {
         }));
 });
 
-app.get('/today', function (req, res) {
+app.get('/solar', function (req, res) {
     var renderer = mustacheExpress('views', '.mst');
-    (renderer('views/today.mst',
+    (renderer('views/solar.mst',
         {
             days: tenDay.map((weather) => {
                 return {
@@ -48,29 +53,49 @@ app.get('/today', function (req, res) {
         }));
 });
 
-app.get('/pollen', function (req, res) {
+app.get('/airQuality', function (req, res) {
     var renderer = mustacheExpress('views', '.mst');
-    (renderer('views/pollen.mst',
+    const airQualityPromises = [tomClient.getCurrentDataFields({
+        lat: config.latitude,
+        lng: config.longitude
+    }), tomClient.getCurrentDataFields({
+        lat: config.latitude,
+        lng: config.longitude
+    })]
+    Promise.all(airQualityPromises)
+        .then((airQualityData) => {
+            console.log(airQualityData[0].timelines[0].intervals[0].values)
+            tomClient.getTimeBoundedFields({
+                lat: config.latitude,
+                lng: config.longitude
+            });
+            renderer('views/airQuality.mst',
+                {
+                    airQuality: {
+                        ...airQualityData[0].timelines[0].intervals[0].values,
+                        ...airQualityData[1].timelines[0].intervals[0].values
+                    }
+                }, function (err, result) {
+                    res.send(result)
+                })
+        });
+});
+
+app.get('/calendar', function (req, res) {
+    var renderer = mustacheExpress('views', '.mst');
+    renderer('views/calendar.mst',
         {
-            days: tenDay.map((weather) => {
-                return {
-                    ...weather,
-                    time: moment.weekdaysShort(moment(weather.time).weekday())
-                }
-            })
+            calendar: 1
         }, function (err, result) {
             res.send(result)
-        }));
+        })
 });
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
 
-const config = {
-    latitude: 36.0,
-    longitude: -96.0
-}
+
 
 type TimeSeriesEntry = {
     time: string | number,

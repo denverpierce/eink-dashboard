@@ -33,12 +33,32 @@ export const TomClient = (token: string) => {
   const TOM_API = 'https://api.tomorrow.io';
   const httpClient = client.create();
 
-  const fields = ['treeIndex', 'grassIndex', 'weedIndex']
+  // TODO: make configurable
+  const currentFields = ['treeIndex', 'grassIndex', 'weedIndex'];
+  const timeBoundedFields = ['epaIndex'];
 
   return {
-    getLatestPollen(location: AmbLocation) {
-      const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&timesteps=current&fields=${fields.join(',')}&apikey=${token}`
+    getCurrentDataFields(location: AmbLocation) {
+      const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&timesteps=current&fields=${currentFields.join(',')}&apikey=${token}`
       // logger.info(`Url is: ${url}`)
+      return httpClient.get<unknown>(url)
+        .then(r => {
+          const maybeParsedData = tomData.safeParse(r.data);
+          if (!maybeParsedData.success) {
+            logger.error(`Tom Pollen parsing error: ${JSON.stringify(maybeParsedData.error)}`)
+            throw new Error('Data didnt parse correctly')
+          }
+          // console.log(maybeParsedData.data.data)
+          return maybeParsedData.data.data;
+        })
+        .catch(e => {
+          logger.error(`An error occured calling the pollen api: ${JSON.stringify(e)}`);
+          throw new Error('An error occured calling the pollen api');
+        });
+    },
+    getTimeBoundedFields(location: AmbLocation) {
+      const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=metric&timesteps=1h&fields=${timeBoundedFields.join(',')}&endTime=nowPlus1h&apikey=${token}`
+      logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {
           const maybeParsedData = tomData.safeParse(r.data);
@@ -49,10 +69,10 @@ export const TomClient = (token: string) => {
           console.log(maybeParsedData.data.data)
           return maybeParsedData.data.data;
         })
-      // .catch(e => {
-      //   logger.error(`An error occured calling the pollen api: ${JSON.stringify(e)}`);
-      //   throw new Error('An error occured calling the pollen api');
-      // });
+        .catch(e => {
+          logger.error(`An error occured calling the pollen api: ${JSON.stringify(e)}`);
+          throw new Error('An error occured calling the pollen api');
+        });
     },
   };
 };

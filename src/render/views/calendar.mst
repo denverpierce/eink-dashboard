@@ -1,0 +1,49 @@
+<section class="day-forecast-section">
+    <style>
+      .calendar-list {
+        padding: 0 2.5rem;
+      }
+
+  ul, ol{
+        list-style: none;
+    }
+    li {
+      background: #454545;
+      color: #fff;
+      margin: 1.3rem 1rem;
+      padding: 8px 0 8px 0;
+      padding-left: 0px;
+      position: relative;
+      border-radius: 0em 2px 1em 0em;
+      padding-left: 3.0em;
+      font-size: 1.2em;
+    }
+    .calendar-icon {
+      text-align: center;
+      font-size: 2.9em;
+      position: absolute;
+      top: -12px;
+      left: -48px;
+      border-radius: 50%;
+      color: #454545;
+    }
+
+
+    li:nth-child(even){
+        background-color: #b1b1b1;
+    }
+    li:nth-child(even) .calendar-icon{
+        color: #b1b1b1;
+    }
+    </style>
+    <h2 class="header">Calendar</h2>
+    <div class="calendar-list">
+      {{#calendar}}
+      <ul>
+        <li><i class="fa-regular fa-calendar calendar-icon"></i>Kendra's Birthday</li>
+        <li><i class="fa-regular fa-calendar calendar-icon"></i>Kendra's Birthday</li>
+        <li><i class="fa-regular fa-calendar calendar-icon"></i>Kendra's Birthday</li>
+      </ul>
+      {{/calendar}}
+    </div>
+</section>

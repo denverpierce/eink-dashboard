@@ -17,25 +17,30 @@
     grid-template-rows: 1fr 1fr 1fr;
     gap: 0px 0px;
     grid-template-areas:
-        "block-1 block-1 block-2 block-2"
-        "ten-day-forecast ten-day-forecast ten-day-forecast todays-weather"
-        "today-weather-curve today-weather-curve today-weather-curve todays-weather";
+        "block-calendar block-calendar block-air block-air"
+        "block-ten-day block-ten-day block-ten-day block-solar"
+        "today-weather-curve today-weather-curve today-weather-curve block-remote";
 }
 
-.block-1 {
-    grid-area: block-1;
+.header {
+    border-bottom: 5px dotted black;
+    margin: 0 2rem;
 }
 
-.block-2 {
-    grid-area: block-2;
+.block-calendar {
+    grid-area: block-calendar;
 }
 
-.ten-day-forecast {
-    grid-area: ten-day-forecast;
+.block-air {
+    grid-area: block-air;
 }
 
-.todays-weather {
-    grid-area: todays-weather;
+.block-ten-day {
+    grid-area: block-ten-day;
+}
+
+.block-solar {
+    grid-area: block-solar;
 }
 
 .today-weather-curve {

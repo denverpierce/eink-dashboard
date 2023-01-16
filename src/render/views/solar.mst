@@ -1,0 +1,40 @@
+<section class="day-forecast-section">
+  <style>
+    .solar {
+      display: flex;
+      flex-direction: column;
+      margin: 0 3.2rem;
+    }
+    .solar-item {
+      height: 6rem;
+      display: flex;
+      flex-direction: row;
+    }
+    .solar-item img, .solar-item i {
+      height: 100%;
+      width: 50%;
+      line-height: 150%;
+    }
+    .solar span {
+      margin: auto 1rem;
+      width: 50%;
+      font-size: 1.3rem;
+    }
+  </style>
+  <h2 class="header">Solar</h2>
+  <div class="solar">
+    <div class="solar-item">
+      <span>8:00 am</span>
+      <img src="icons/sunrise.svg" />
+    </div>
+    <div class="solar-item">
+      <span>8:00 am</span>
+      <img src="icons/sunset.svg" />
+    </div>
+    <div class="solar-item">
+      <span>8 hrs</span>
+      <i class="fa-regular fa-fw fa-4x fa-sun"></i>
+    </div>
+  </div>
+</div>
+</section>

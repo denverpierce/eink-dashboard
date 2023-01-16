@@ -7,11 +7,15 @@ const axios_1 = __importDefault(require("axios"));
 const express_1 = __importDefault(require("express"));
 const mustache_express_1 = __importDefault(require("mustache-express"));
 const moment_1 = __importDefault(require("moment"));
+const ApiMain_1 = require("./api/ApiMain");
 const app = (0, express_1.default)();
 const port = 3000;
 let tenDay = [];
+const config = {
+    latitude: 36.0,
+    longitude: -96.0
+};
 app.use(express_1.default.static('public'));
-app.use(express_1.default.static('node_modules/@fortawesome/fontawesome-free/'));
 app.get('/', function (req, res) {
     res.sendFile('./index.html', { root: `${__dirname}/../` });
 });
@@ -30,9 +34,9 @@ app.get('/tenDay', function (req, res) {
         res.send(result);
     }));
 });
-app.get('/today', function (req, res) {
+app.get('/solar', function (req, res) {
     var renderer = (0, mustache_express_1.default)('views', '.mst');
-    (renderer('views/today.mst', {
+    (renderer('views/solar.mst', {
         days: tenDay.map((weather) => {
             return {
                 ...weather,
@@ -43,26 +47,43 @@ app.get('/today', function (req, res) {
         res.send(result);
     }));
 });
-app.get('/pollen', function (req, res) {
+app.get('/airQuality', function (req, res) {
     var renderer = (0, mustache_express_1.default)('views', '.mst');
-    (renderer('views/pollen.mst', {
-        days: tenDay.map((weather) => {
-            return {
-                ...weather,
-                time: moment_1.default.weekdaysShort((0, moment_1.default)(weather.time).weekday())
-            };
-        })
+    const airQualityPromises = [ApiMain_1.tomClient.getCurrentDataFields({
+            lat: config.latitude,
+            lng: config.longitude
+        }), ApiMain_1.tomClient.getCurrentDataFields({
+            lat: config.latitude,
+            lng: config.longitude
+        })];
+    Promise.all(airQualityPromises)
+        .then((airQualityData) => {
+        console.log(airQualityData[0].timelines[0].intervals[0].values);
+        ApiMain_1.tomClient.getTimeBoundedFields({
+            lat: config.latitude,
+            lng: config.longitude
+        });
+        renderer('views/airQuality.mst', {
+            airQuality: {
+                ...airQualityData[0].timelines[0].intervals[0].values,
+                ...airQualityData[1].timelines[0].intervals[0].values
+            }
+        }, function (err, result) {
+            res.send(result);
+        });
+    });
+});
+app.get('/calendar', function (req, res) {
+    var renderer = (0, mustache_express_1.default)('views', '.mst');
+    renderer('views/calendar.mst', {
+        calendar: 1
     }, function (err, result) {
         res.send(result);
-    }));
+    });
 });
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
-const config = {
-    latitude: 36.0,
-    longitude: -96.0
-};
 const httpClient = axios_1.default.create();
 httpClient.defaults.headers.common['User-Agent'] = 'me';
 httpClient.get(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${config.latitude}&lon=${config.longitude}&altitude=100`).then((resp) => {
