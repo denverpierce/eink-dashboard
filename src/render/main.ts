@@ -4,23 +4,39 @@ import express from 'express';
 import mustacheExpress from 'mustache-express';
 import moment from 'moment';
 import { tomClient } from './api/ApiMain';
+import { DataFetchConfig, getAllApiData } from './api/sources/Fetcher';
 
 const app = express()
 const port = 3000;
 
 let tenDay: TimeSeriesEntry[] = [];
 
-const config = {
-    latitude: 36.0,
-    longitude: -96.0
+const dataFechConfig: DataFetchConfig = {
+    primaryLocation: {
+        lat: 32.9,
+        lng: -96.7
+    },
+    remoteLocation: {
+        lat: 39.9,
+        lng: -105.5
+    }
 }
 
+// TODO: types
+let allApiData: any[] = [];
+
 app.use(express.static('public'))
-app.get('/', function (req, res) {
-    res.sendFile('./index.html', { root: `${__dirname}/../` });
+app.get('/', async function (req, res) {
+    try {
+        allApiData = await getAllApiData(dataFechConfig);
+    } catch (error) {
+
+    } finally {
+        res.sendFile('./index.html', { root: `${__dirname}/../` });
+    }
 });
 
-// Register '.mustache' extension with The Mustache Express
+// Register '.mustache' extension with mustache-express
 app.engine('mst', mustacheExpress('views', '.mst'));
 
 app.get('/tenDay', function (req, res) {
@@ -55,27 +71,18 @@ app.get('/solar', function (req, res) {
 
 app.get('/airQuality', function (req, res) {
     var renderer = mustacheExpress('views', '.mst');
-    const airQualityPromises = [tomClient.getCurrentDataFields({
-        lat: config.latitude,
-        lng: config.longitude
-    }), tomClient.getTimeBoundedFields({
-        lat: config.latitude,
-        lng: config.longitude
-    })]
-    Promise.all(airQualityPromises)
-        .then(([pollenData, airQualityData]) => {
-            const airQuality = {
-                ...pollenData.timelines[0].intervals[0].values,
-                ...airQualityData.timelines[0].intervals[0].values
-            }
-            console.log(airQuality)
-            renderer('views/airQuality.mst',
-                {
-                    airQuality
-                }, function (err, result) {
-                    res.send(result)
-                })
-        });
+    console.log(allApiData)
+    const airQuality = {
+        ...allApiData[0].timelines[0].intervals[0].values,
+        ...allApiData[1].timelines[0].intervals[0].values
+    }
+    // console.log(airQuality)
+    renderer('views/airQuality.mst',
+        {
+            airQuality
+        }, function (err, result) {
+            res.send(result)
+        })
 });
 
 app.get('/calendar', function (req, res) {
@@ -120,7 +127,7 @@ const httpClient = client.create();
 httpClient.defaults.headers.common['User-Agent'] = 'me'
 
 
-httpClient.get<GeoJSON.Feature<GeoJSON.Point, WeatherProperties>>(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${config.latitude}&lon=${config.longitude}&altitude=100`).then((resp) => {
+httpClient.get<GeoJSON.Feature<GeoJSON.Point, WeatherProperties>>(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${dataFechConfig.primaryLocation.lat}&lon=${dataFechConfig.primaryLocation.lng}&altitude=100`).then((resp) => {
     const weatherData = resp.data;
     tenDay = weatherData.properties.timeseries
         // @ts-ignore
