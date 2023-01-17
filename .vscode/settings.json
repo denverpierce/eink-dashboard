@@ -1,6 +1,9 @@
 {
-    "files.exclude": {
-        "src/render/node_modules": true,
-        "src/render/bin": true
-    }
+  "files.exclude": {
+    "src/render/node_modules": true,
+    "src/render/bin": true
+  },
+  "files.associations": {
+    "*.mst": "html"
+  }
 }
