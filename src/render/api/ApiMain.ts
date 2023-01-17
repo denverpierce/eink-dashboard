@@ -1,6 +1,12 @@
 import { TomClient } from "./sources/tom/tom.service";
 
-const tomClient = TomClient('zzz');
+if (!process.env['TOM_TOKEN']) {
+  console.error('No Tom token found, exiting');
+  process.exit();
+}
+
+const tomClient = TomClient(process.env.TOM_TOKEN || '');
+
 export {
   tomClient
 }

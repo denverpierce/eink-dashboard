@@ -15,10 +15,14 @@
       width: 50%;
       line-height: 150%;
     }
+    .solar-item .fa-sun {
+      width: 67%;
+    }
     .solar span {
       margin: auto 1rem;
       width: 50%;
       font-size: 1.3rem;
+      text-align: center;
     }
   </style>
   <h2 class="header">Solar</h2>

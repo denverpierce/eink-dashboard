@@ -65,7 +65,6 @@ export const TomClient = (token: string) => {
             }
             throw new Error('Unknown api error occured');
           }
-          // console.log(maybeParsedData.data.data)
           return maybeParsedData.data.data;
         })
         .catch(e => {
@@ -83,7 +82,6 @@ export const TomClient = (token: string) => {
             logger.error(`Tom Pollen parsing error: ${JSON.stringify(maybeParsedData.error)}`)
             throw new Error('Data didnt parse correctly')
           }
-          // console.log(maybeParsedData.data.data)
           return maybeParsedData.data.data;
         })
         .catch(e => {
