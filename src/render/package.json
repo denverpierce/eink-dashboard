@@ -24,5 +24,8 @@
     "typescript": "^4.9.4",
     "webpack": "^5.75.0",
     "zod": "^3.20.2"
+  },
+  "devDependencies": {
+    "@types/mustache-express": "^1.2.2"
   }
 }

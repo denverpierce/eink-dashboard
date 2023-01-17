@@ -3,7 +3,6 @@ import client from 'axios';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
 import moment from 'moment';
-import { tomClient } from './api/ApiMain';
 import { DataFetchConfig, getAllApiData } from './api/sources/Fetcher';
 
 const app = express()
@@ -30,7 +29,7 @@ app.get('/', async function (req, res) {
   try {
     allApiData = await getAllApiData(dataFechConfig);
   } catch (error) {
-
+    // TODO render error blocks here
   } finally {
     res.sendFile('./index.html', { root: `${__dirname}/../` });
   }
@@ -106,8 +105,6 @@ app.get('/remote', function (req, res) {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 });
-
-
 
 type TimeSeriesEntry = {
   time: string | number,
