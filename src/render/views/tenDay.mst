@@ -1,70 +1,99 @@
 <section class="day-forecast-section">
-    <style>
-        .day-forecast-section {
-            display: flex;
-            flex-direction: column;
-        }
+  <script>
+    Highcharts.seriesType('lowmedhigh', 'boxplot', {
+    keys: ['low', 'median', 'high'],
+    tooltip: {
+        pointFormat: '<span style="color:{point.color}">\u25CF</span> {series.name}: ' +
+            'Low <b>{point.low} NOK</b> - Median <b>{point.median} NOK</b> - High <b>{point.high} NOK</b><br/>'
+    }
+}, {
+    // Change point shape to a line with three crossing lines for low/median/high
+    // Stroke width is hardcoded to 1 for simplicity
+    drawPoints: function () {
+        var series = this;
+        this.points.forEach(function (point) {
+            var graphic = point.graphic,
+                verb = graphic ? 'animate' : 'attr',
+                shapeArgs = point.shapeArgs,
+                width = shapeArgs.width,
+                left = Math.floor(shapeArgs.x) + 0.5,
+                right = left + width,
+                crispX = left + Math.round(width / 2) + 0.5,
+                highPlot = Math.floor(point.highPlot) + 0.5,
+                medianPlot = Math.floor(point.medianPlot) + 0.5,
+                // Sneakily draw low marker even if 0
+                lowPlot = Math.floor(point.lowPlot) +
+                    0.5 - (point.low === 0 ? 1 : 0);
 
-        .day-forecast-days {
-            display: flex;
-            flex-direction: row;
-            margin: 0 auto;
-        }
+            if (point.isNull) {
+                return;
+            }
 
-        .day-forecast-day {
-            font-size: 32px;
-            width: 5.3rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+            if (!graphic) {
+                point.graphic = graphic = series.chart.renderer
+                    .path('point')
+                    .add(series.group);
+            }
 
-        .day-forecast-temp {
-            font-size: 26px;
-            margin: 0;
-            height: 5rem;
-            width: 5rem;
-            text-align: center;
-            line-height: 5rem;
-        }
+            graphic.attr({
+                stroke: point.color || series.color,
+                'stroke-width': 1
+            });
 
-        .day-forecast-high {
-            background-color: rgb(160 157 157);
-            color: white;
+            graphic[verb]({
+                d: [
+                    'M', left, highPlot,
+                    'H', right,
+                    'M', left, medianPlot,
+                    'H', right,
+                    'M', left, lowPlot,
+                    'H', right,
+                    'M', crispX, highPlot,
+                    'V', lowPlot
+                ]
+            });
+        });
+    }
+});
+    Highcharts.chart('tenDay', {
+    chart: {
+        type: 'lowmedhigh',
+        height: 300,
+        width: 900
+    },
+    title: {
+            text: null
+        },
+    xAxis: [{
+        categories: ['Mon','Tue']
+    }],
+    yAxis: {
+        title: {
+            text: null
+        },
+    },
+    plotOptions: {
+        series: {
+            whiskerWidth: 5
         }
-
-        .day-forecast-low {
-            border: 1px solid;
-            background: white;
-            position: relative;
-            right: 18px;
-            top: -13px;
-        }
-
-        .day-forecast-humidity {
-            font-size: 26px
-        }
-
-        .day-forecast-shortday {
-            margin: 0.5rem
-        }
-
-        .day-forecast-highlow {
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
-    <h2 class="header">Ten Day Forecast</h2>
-    <div class="day-forecast-days">
-        {{#days}}
-        <div class="day-forecast-day">
-            <p class="day-forecast-shortday">{{time}}</p>
-            <div class="day-forecast-highlow">
-                <p class="day-forecast-temp day-forecast-high">{{data.instant.details.air_temperature}} F</p>
-                <p class="day-forecast-temp day-forecast-low">{{data.instant.details.air_temperature}} F</p>
-            </div>
-            <p class="day-forecast-humidity">{{data.instant.details.relative_humidity}}%</p>
-        </div>
-        {{/days}}
+    },
+    legend: {
+      enabled: false
+    },
+    series: [{
+        name: 'Scientific research and development',
+        data: {{days}}
+    }]
+});
+  </script>
+  <h2 class="header">Ten Day Forecast</h2>
+  <figure class="highcharts-figure">
+    <div id="tenDay" style="height:100%,width:100%">
+      <div id="loading">
+        <i class="fa fa-spinner fa-spin"></i> Loading data from external
+        source
+      </div>
     </div>
+  </figure>
+</div>
 </section>

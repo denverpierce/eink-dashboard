@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import client from 'axios';
-import { z } from 'zod';
+import { number, z } from 'zod';
 import logger from '../../logging';
 import { AmbLocation } from '../amb/amb.service';
 
@@ -12,7 +12,12 @@ const tomValue = z.object({
   grassIndex: tomIndexValues.optional(),
   epaIndex: z.number().optional(),
   sunriseTime: z.string().optional(),
-  sunsetTime: z.string().optional()
+  sunsetTime: z.string().optional(),
+  /** Per the request, in Farenheight */
+  temperatureMax: z.number().optional(),
+  /** Per the request, in Farenheight */
+  temperatureMin: z.number().optional(),
+  precipitationProbabilityAvg: z.number().optional()
 });
 const tomInterval = z.object({
   startTime: z.string(),
@@ -46,7 +51,7 @@ export const TomClient = (token: string) => {
 
   // TODO: make configurable
   const currentFields = ['treeIndex', 'grassIndex', 'weedIndex'];
-  const timeBoundedFields = ['epaIndex', 'sunriseTime', 'sunsetTime'];
+  const timeBoundedFields = ['epaIndex', 'sunriseTime', 'sunsetTime', 'temperatureMax', 'temperatureMin', 'precipitationProbabilityAvg'];
 
   return {
     getCurrentDataFields(location: AmbLocation) {
@@ -72,8 +77,8 @@ export const TomClient = (token: string) => {
           throw new Error('An error occured calling the pollen api');
         });
     },
-    getTimeBoundedFields(location: AmbLocation) {
-      const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=metric&timesteps=1h&fields=${timeBoundedFields.join(',')}&endTime=nowPlus1h&apikey=${token}`
+    getTimeBoundedFields(location: AmbLocation, timeParameters: string) {
+      const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&fields=${timeBoundedFields.join(',')}&${timeParameters}&apikey=${token}`
       logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {

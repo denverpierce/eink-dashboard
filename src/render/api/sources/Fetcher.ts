@@ -12,7 +12,11 @@ export const getAllApiData = async (fetchConfig: DataFetchConfig) => {
     lng: fetchConfig.primaryLocation.lng
   }), tomClient.getTimeBoundedFields({
     lat: fetchConfig.primaryLocation.lat,
-    lng: fetchConfig.primaryLocation.lng
-  })];
-  return await Promise.all(airQualityPromises)
+    lng: fetchConfig.primaryLocation.lng,
+  }, 'endTime=nowPlus1h&timesteps=1h'),
+  tomClient.getTimeBoundedFields({
+    lat: fetchConfig.primaryLocation.lat,
+    lng: fetchConfig.primaryLocation.lng,
+  }, 'endTime=nowPlus9d&timesteps=1d')];
+  return Promise.all(airQualityPromises)
 }

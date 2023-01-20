@@ -15,9 +15,6 @@
       width: 50%;
       line-height: 150%;
     }
-    .solar-item .fa-sun {
-      width: 67%;
-    }
     .solar span {
       margin: auto 1rem;
       width: 50%;
@@ -27,18 +24,20 @@
   </style>
   <h2 class="header">Solar</h2>
   <div class="solar">
+    {{#solar}}
     <div class="solar-item">
-      <span>8:00 am</span>
+      <span>{{sunrise}}</span>
       <img src="icons/sunrise.svg" />
     </div>
     <div class="solar-item">
-      <span>8:00 am</span>
+      <span>{{sunset}}</span>
       <img src="icons/sunset.svg" />
     </div>
     <div class="solar-item">
-      <span>8 hrs</span>
+      <span>{{daylightLength}}</span>
       <i class="fa-regular fa-fw fa-4x fa-sun"></i>
     </div>
+    {{/solar}}
   </div>
 </div>
 </section>

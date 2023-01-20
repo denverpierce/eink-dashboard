@@ -24,28 +24,28 @@
       <p>Air</p>
       <i class="fa-regular fa-circle fa-4x"></i>
       <span class="pollen-count">{{ epaIndex }}</span>
-      <span class="pollen-text">HIGH</span>
+      <span class="pollen-text">{{ epaLabel }}</span>
     </div>
     <div class="pollen-section">
       <i class="fa-solid fa-2x fa-tree"></i>
       <p>Tree</p>
       <i class="fa-regular fa-circle fa-4x"></i>
       <span class="pollen-count">{{ treeIndex }}</span>
-      <span class="pollen-text">HIGH</span>
+      <span class="pollen-text">{{ treeLabel }}</span>
     </div>
     <div class="pollen-section">
       <i class="fa-solid fa-2x fa-seedling"></i>
       <p>Grass</p>
       <i class="fa-regular fa-circle fa-4x"></i>
       <span class="pollen-count">{{ grassIndex }}</span>
-      <span class="pollen-text">HIGH</span>
+      <span class="pollen-text">{{ grassLabel }}</span>
     </div>
     <div class="pollen-section">
       <i class="fa-solid fa-2x fa-plant-wilt"></i>
       <p>Weed</p>
       <i class="fa-regular fa-circle fa-4x"></i>
       <span class="pollen-count">{{ weedIndex }}</span>
-      <span class="pollen-text">HIGH</span>
+      <span class="pollen-text">{{ weedLabel }}</span>
     </div>
     {{/airQuality}}
   </div>

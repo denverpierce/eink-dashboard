@@ -11,10 +11,28 @@
       integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV"
       crossorigin="anonymous"
     ></script>
+    <script>
+      function getScreenShot() {
+        let c = document.querySelector(".container");
+        const a = html2canvas(c);
+        a.then((canvas) => {
+          var t = canvas.toDataURL().replace("data:image/png;base64,", "");
+          this.downloadBase64File("image/png", t, "image");
+        });
+      }
+
+      function downloadBase64File(contentType, base64Data, fileName) {
+        const linkSource = `data:${contentType};base64,${base64Data}`;
+        const downloadLink = document.createElement("a");
+        downloadLink.href = linkSource;
+        downloadLink.download = fileName;
+        downloadLink.click();
+      }
+    </script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/pattern-fill.js"></script>
     <script src="https://code.highcharts.com/modules/data.js"></script>
-    <script src="scripts/chart.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
@@ -66,17 +84,7 @@
       <div class="block-ten-day" hx-get="/tenDay" hx-trigger="load">10 day</div>
       <div class="block-solar" hx-get="/solar" hx-trigger="load">Solar</div>
       <div class="block-remote" hx-get="/remote" hx-trigger="load">Remote</div>
-      <div class="today-weather-curve">
-        <h2 class="header">Today's Weather Graph</h2>
-        <figure class="highcharts-figure">
-          <div id="container">
-            <div id="loading">
-              <i class="fa fa-spinner fa-spin"></i> Loading data from external
-              source
-            </div>
-          </div>
-        </figure>
-      </div>
+      <div class="today-weather-curve" hx-get="/graph" hx-trigger="load"></div>
     </div>
   </body>
 </html>
