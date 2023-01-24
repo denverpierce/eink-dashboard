@@ -7,16 +7,26 @@ export interface DataFetchConfig {
 }
 
 export const getAllApiData = async (fetchConfig: DataFetchConfig) => {
-  const airQualityPromises = [tomClient.getCurrentDataFields({
+  const currentDataFields = tomClient.getCurrentDataFields({
     lat: fetchConfig.primaryLocation.lat,
     lng: fetchConfig.primaryLocation.lng
-  }), tomClient.getTimeBoundedFields({
+  });
+  const currentTimeBoundFields = tomClient.getTimeBoundedFields({
     lat: fetchConfig.primaryLocation.lat,
     lng: fetchConfig.primaryLocation.lng,
-  }, 'endTime=nowPlus1h&timesteps=1h'),
-  tomClient.getTimeBoundedFields({
+  }, 'endTime=nowPlus1h&timesteps=1h');
+  const tenDayTimeBoundFields = tomClient.getTimeBoundedFields({
     lat: fetchConfig.primaryLocation.lat,
     lng: fetchConfig.primaryLocation.lng,
-  }, 'endTime=nowPlus9d&timesteps=1d')];
-  return Promise.all(airQualityPromises)
+  }, 'endTime=nowPlus9d&timesteps=1d');
+  const remoteTimeBoundFields = tomClient.getTimeBoundedFields({
+    lat: fetchConfig.primaryLocation.lat,
+    lng: fetchConfig.primaryLocation.lng,
+  }, 'endTime=nowPlus1h&timesteps=1h');
+  return Promise.all([
+    currentDataFields,
+    currentTimeBoundFields,
+    tenDayTimeBoundFields,
+    remoteTimeBoundFields
+  ])
 }

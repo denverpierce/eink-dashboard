@@ -3,12 +3,18 @@ import client from 'axios';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
 import { DataFetchConfig, getAllApiData } from './api/sources/Fetcher';
-import { apiPayloadToAirQuality, apiPayloadToSolarTimes, apiPayloadToTenDay, tomDataArrayToObject } from './api/sources/tom/tom.renderer';
+import {
+  apiPayloadToAirQuality,
+  apiPayloadToSolarTimes,
+  apiPayloadToTenDay,
+  tomDataArrayToObject,
+  apiPayloadToRemote
+} from './api/sources/tom/tom.renderer';
 
 const app = express()
 const port = 3000;
 
-let tenDay: TimeSeriesEntry[] = [];
+let tenDay: any[] = [];
 
 const dataFechConfig: DataFetchConfig = {
   primaryLocation: {
@@ -31,7 +37,6 @@ app.get('/', async function (req, res) {
   } catch (error) {
     console.error(error)
   } finally {
-    console.log(__dirname)
     res.sendFile('./index.html', { root: `${__dirname}/../../../src/render/` });
   }
 });
@@ -85,9 +90,10 @@ app.get('/calendar', function (req, res) {
 
 app.get('/remote', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
+  const remote = apiPayloadToRemote(tomDataArrayToObject(allApiData));
   renderer('src/render/views/remote.mst',
     {
-      calendar: 1
+      remote
     }, function (err, result) {
       res.send(result)
     })
@@ -106,42 +112,3 @@ app.get('/graph', function (req, res) {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 });
-
-type TimeSeriesEntry = {
-  time: string | number,
-  data: {
-    instant: {
-      details: {
-        air_pressure_at_sea_level: number,
-        air_temperature: number,
-        cloud_area_fraction: number,
-        relative_humidity: number,
-        wind_from_direction: number,
-        wind_speed: number,
-      }
-    }
-  }
-}
-
-type WeatherProperties = {
-  meta: any,
-  time: string | number,
-  timeseries: TimeSeriesEntry[]
-}
-
-const httpClient = client.create();
-httpClient.defaults.headers.common['User-Agent'] = 'me'
-
-
-// httpClient.get<GeoJSON.Feature<GeoJSON.Point, WeatherProperties>>(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${dataFechConfig.primaryLocation.lat}&lon=${dataFechConfig.primaryLocation.lng}&altitude=100`).then((resp) => {
-//   const weatherData = resp.data;
-//   tenDay = weatherData.properties.timeseries
-//     // @ts-ignore
-//     .filter((pTs) => pTs.time.includes('T00:00:00Z'))
-//     .map((ts) => {
-//       return {
-//         time: Date.parse(ts.time as string),
-//         data: ts.data
-//       }
-//     });
-// })

@@ -5,8 +5,6 @@ import { getTypedKeys } from '../../utils';
 import { getAllApiData } from '../Fetcher';
 import { TomData } from './tom.service';
 
-type TomPollenIndicies = TomData["timelines"][0]["intervals"][0]["values"]
-
 const tomPollenIndexToLabelMap = {
   [0]: 'None',
   [1]: 'Very low',
@@ -26,7 +24,8 @@ export const tomDataArrayToObject = (tomData: TomData[]) => {
   return {
     current: tomData[0],
     timeBound: tomData[1],
-    timeBoundDay: tomData[2]
+    timeBoundDay: tomData[2],
+    remote: tomData[3]
   }
 }
 
@@ -90,12 +89,20 @@ export const apiPayloadToSolarTimes = (tomData: ReturnType<typeof tomDataArrayTo
   }
 }
 
+const intervalToDay = (interval: TomData['timelines'][0]['intervals'][0]) => {
+  return {
+    temperatureMax: interval.values.temperatureMax?.toFixed(0),
+    temperatureMin: interval.values.temperatureMin?.toFixed(0),
+    precipitationProbabilityAvg: interval.values.precipitationProbabilityAvg?.toFixed(0),
+    windSpeedAvg: interval.values.temperatureMax?.toFixed(0),
+    windDirection: interval.values.temperatureMax,
+    windGust: interval.values.temperatureMax?.toFixed(0)
+  }
+}
+
 export const apiPayloadToTenDay = (tomData: ReturnType<typeof tomDataArrayToObject>) => {
-  return tomData.timeBoundDay.timelines[0].intervals.map((interval) => {
-    return {
-      temperatureMax: interval.values.temperatureMax?.toFixed(0),
-      temperatureMin: interval.values.temperatureMin?.toFixed(0),
-      precipitationProbabilityAvg: interval.values.precipitationProbabilityAvg?.toFixed(0)
-    }
-  })
+  return tomData.timeBoundDay.timelines[0].intervals.map(intervalToDay);
+}
+export const apiPayloadToRemote = (tomData: ReturnType<typeof tomDataArrayToObject>) => {
+  return tomData.remote.timelines[0].intervals.map(intervalToDay);
 }

@@ -4,5 +4,13 @@
   </style>
   <h2 class="header">Nederland</h2>
   <div class="solar">
+    {{#remote}}
+    <span>{{temperatureMax}}</span>
+    <span>{{temperatureMin}}</span>
+    <span>{{precipitationProbabilityAvg}}</span>
+    <span>{{windSpeedAvg}}</span>
+    <span>{{windDirection}}</span>
+    <span>{{windGust}}</span>
+    {{/remote}}
   </div>
 </section>

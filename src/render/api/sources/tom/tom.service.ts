@@ -17,7 +17,10 @@ const tomValue = z.object({
   temperatureMax: z.number().optional(),
   /** Per the request, in Farenheight */
   temperatureMin: z.number().optional(),
-  precipitationProbabilityAvg: z.number().optional()
+  precipitationProbabilityAvg: z.number().optional(),
+  windSpeedAvg: z.number().optional(),
+  windDirection: z.number().optional(),
+  windGust: z.number().optional()
 });
 const tomInterval = z.object({
   startTime: z.string(),
@@ -51,7 +54,17 @@ export const TomClient = (token: string) => {
 
   // TODO: make configurable
   const currentFields = ['treeIndex', 'grassIndex', 'weedIndex'];
-  const timeBoundedFields = ['epaIndex', 'sunriseTime', 'sunsetTime', 'temperatureMax', 'temperatureMin', 'precipitationProbabilityAvg'];
+  const timeBoundedFields = [
+    'epaIndex',
+    'sunriseTime',
+    'sunsetTime',
+    'temperatureMax',
+    'temperatureMin',
+    'precipitationProbabilityAvg',
+    'windSpeedAvg',
+    'windDirection',
+    'windGust'
+  ];
 
   return {
     getCurrentDataFields(location: AmbLocation) {
