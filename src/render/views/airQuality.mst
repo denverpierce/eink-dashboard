@@ -13,7 +13,8 @@
     }
     .pollen-count {
       position: relative;
-      top: -41px;
+      top: -45px;
+      font-size: 1.5rem;
     }
   </style>
   <h2 class="header">Air Quality</h2>

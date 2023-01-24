@@ -25,6 +25,7 @@
 .header {
     border-bottom: 5px dotted black;
     margin: 0 2rem;
+    color: hsl(0deg 0% 50%);
 }
 
 .block-calendar {

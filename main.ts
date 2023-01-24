@@ -2,8 +2,8 @@ import type { GeoJSON } from 'geojson';
 import client from 'axios';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
-import { DataFetchConfig, getAllApiData } from './api/sources/Fetcher';
-import { apiPayloadToAirQuality, apiPayloadToSolarTimes, apiPayloadToTenDay, tomDataArrayToObject } from './api/sources/tom/tom.renderer';
+import { DataFetchConfig, getAllApiData } from './src/render/api/sources/Fetcher';
+import { apiPayloadToAirQuality, apiPayloadToSolarTimes, apiPayloadToTenDay, tomDataArrayToObject } from './src/render/api/sources/tom/tom.renderer';
 
 const app = express()
 const port = 3000;
@@ -24,15 +24,14 @@ const dataFechConfig: DataFetchConfig = {
 // TODO: types
 let allApiData: any[] = [];
 
-app.use(express.static('src/render/public'))
+app.use(express.static('public'))
 app.get('/', async function (req, res) {
   try {
     allApiData = await getAllApiData(dataFechConfig);
   } catch (error) {
     console.error(error)
   } finally {
-    console.log(__dirname)
-    res.sendFile('./index.html', { root: `${__dirname}/../../../src/render/` });
+    res.sendFile('./index.html', { root: `${__dirname}/../` });
   }
 });
 
@@ -42,7 +41,7 @@ app.engine('mst', mustacheExpress('views', '.mst'));
 app.get('/tenDay', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
   const tenDay = apiPayloadToTenDay(tomDataArrayToObject(allApiData));
-  (renderer('src/render/views/tenDay_old.mst',
+  (renderer('views/tenDay_old.mst',
     {
       days: tenDay
     }, function (err, result) {
@@ -52,7 +51,7 @@ app.get('/tenDay', function (req, res) {
 
 app.get('/solar', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
-  (renderer('src/render/views/solar.mst',
+  (renderer('views/solar.mst',
     {
       solar: apiPayloadToSolarTimes(tomDataArrayToObject(allApiData))
     }, function (err, result) {
@@ -64,7 +63,7 @@ app.get('/airQuality', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
   const airQuality = apiPayloadToAirQuality(tomDataArrayToObject(allApiData));
   // console.log(airQuality)
-  renderer('src/render/views/airQuality.mst',
+  renderer('views/airQuality.mst',
     {
       airQuality
     }, function (err, result) {
@@ -75,7 +74,7 @@ app.get('/airQuality', function (req, res) {
 
 app.get('/calendar', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
-  renderer('src/render/views/calendar.mst',
+  renderer('views/calendar.mst',
     {
       calendar: 1
     }, function (err, result) {
@@ -85,7 +84,7 @@ app.get('/calendar', function (req, res) {
 
 app.get('/remote', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
-  renderer('src/render/views/remote.mst',
+  renderer('views/remote.mst',
     {
       calendar: 1
     }, function (err, result) {
@@ -95,7 +94,7 @@ app.get('/remote', function (req, res) {
 
 app.get('/graph', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
-  renderer('src/render/views/graph.mst',
+  renderer('views/graph.mst',
     {
       calendar: 1
     }, function (err, result) {

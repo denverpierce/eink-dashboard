@@ -8,3 +8,6 @@ npm-debug.log*
 node_modules/
 bin/
 src/render/bin/main.js
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "test.ts",
-    "start": "node --watch bin/main.js",
+    "start": "node --watch bin/src/render/main.js",
     "build": "tsc -p ./tsconfig.json",
     "watch": "tsc -w",
     "prestart": "tsc -p ./tsconfig.json"
@@ -27,6 +27,7 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.29.2",
     "@types/lodash": "^4.14.191",
     "@types/mustache-express": "^1.2.2"
   }
