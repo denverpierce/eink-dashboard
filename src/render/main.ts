@@ -16,22 +16,24 @@ const port = 3000;
 
 let tenDay: any[] = [];
 
-const dataFechConfig: DataFetchConfig = {
-  primaryLocation: {
-    lat: 32.9,
-    lng: -96.7
-  },
-  remoteLocation: {
-    lat: 39.9,
-    lng: -105.5
-  }
-}
+
 
 // TODO: types
 let allApiData: any[] = [];
 
 app.use(express.static('src/render/public'))
 app.get('/', async function (req, res) {
+  const dataFechConfig: DataFetchConfig = {
+    primaryLocation: {
+      lat: 32.9,
+      lng: -96.7
+    },
+    remoteLocation: {
+      lat: 39.9,
+      lng: -105.5
+    },
+    fetchTime: dayjs()
+  }
   try {
     allApiData = await getAllApiData(dataFechConfig);
   } catch (error) {

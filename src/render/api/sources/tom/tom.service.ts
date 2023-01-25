@@ -56,7 +56,7 @@ export const TomClient = (token: string) => {
   const httpClient = client.create();
 
   // TODO: make configurable
-  const currentFields = ['treeIndex', 'grassIndex', 'weedIndex'];
+  const currentFields = ['treeIndexAvg', 'grassIndexAvg', 'weedIndexAvg'];
   const timeBoundedFields = [
     'epaIndex',
     'sunriseTime',
@@ -70,7 +70,7 @@ export const TomClient = (token: string) => {
   ];
 
   return {
-    getCurrentDataFields(location: AmbLocation) {
+    getCurrentDataFields(location: AmbLocation, fetchMidnight: DayJs) {
       const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&timesteps=current&fields=${currentFields.join(',')}&apikey=${token}`
       // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
