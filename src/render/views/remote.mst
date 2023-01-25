@@ -1,16 +1,16 @@
 <section class="day-forecast-section">
-  <style>
-
-  </style>
+  <style></style>
   <h2 class="header">Nederland</h2>
   <div class="solar">
     {{#remote}}
-    <span>{{temperatureMax}}</span>
-    <span>{{temperatureMin}}</span>
-    <span>{{precipitationProbabilityAvg}}</span>
-    <span>{{windSpeedAvg}}</span>
-    <span>{{windDirection}}</span>
-    <span>{{windGust}}</span>
+    <span>{{ temperatureMin }} F/ {{ temperatureMax }} F</span>
+    <span></span>
+    <span>{{ precipitationProbabilityAvg }} %</span>
+    <span>{{ windSpeedAvg }} mph ({{ windGust }} mph gusts)</span>
+    <span>
+      <i class="fa-solid fa-location-arrow" style="{{ windDirection }}"></i
+    ></span>
+    <span>{{ windGust }}</span>
     {{/remote}}
   </div>
 </section>

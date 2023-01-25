@@ -18,8 +18,11 @@ const tomValue = z.object({
   /** Per the request, in Farenheight */
   temperatureMin: z.number().optional(),
   precipitationProbabilityAvg: z.number().optional(),
+  /** In Miles Per Hour */
   windSpeedAvg: z.number().optional(),
+  /** In Degrees */
   windDirection: z.number().optional(),
+  /** In Miles Per Hour */
   windGust: z.number().optional()
 });
 const tomInterval = z.object({
