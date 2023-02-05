@@ -10,20 +10,28 @@ const tomValue = z.object({
   treeIndex: tomIndexValues.optional(),
   weedIndex: tomIndexValues.optional(),
   grassIndex: tomIndexValues.optional(),
+  treeIndexMax: tomIndexValues.optional(),
+  weedIndexMax: tomIndexValues.optional(),
+  grassIndexMax: tomIndexValues.optional(),
   epaIndex: z.number().optional(),
+  epaIndexMax: z.number().optional(),
   sunriseTime: z.string().optional(),
   sunsetTime: z.string().optional(),
   /** Per the request, in Farenheight */
   temperatureMax: z.number().optional(),
   /** Per the request, in Farenheight */
   temperatureMin: z.number().optional(),
+  /** Per the request, in Farenheight */
+  temperatureAvg: z.number().optional(),
   precipitationProbabilityAvg: z.number().optional(),
   /** In Miles Per Hour */
   windSpeedAvg: z.number().optional(),
   /** In Degrees */
   windDirection: z.number().optional(),
   /** In Miles Per Hour */
-  windGust: z.number().optional()
+  windGust: z.number().optional(),
+  /** Per the request, inches per hour */
+  precipitationIntensity: z.number().optional()
 });
 const tomInterval = z.object({
   startTime: z.string(),
@@ -56,23 +64,22 @@ export const TomClient = (token: string) => {
   const httpClient = client.create();
 
   // TODO: make configurable
-  const currentFields = ['treeIndexAvg', 'grassIndexAvg', 'weedIndexAvg'];
+  const currentFields = ['treeIndexMax', 'grassIndexMax', 'weedIndexMax', 'epaIndexMax', 'sunriseTime', 'sunsetTime'];
   const timeBoundedFields = [
-    'epaIndex',
-    'sunriseTime',
-    'sunsetTime',
     'temperatureMax',
     'temperatureMin',
+    'temperatureAvg',
     'precipitationProbabilityAvg',
     'windSpeedAvg',
     'windDirection',
-    'windGust'
+    'windGust',
+    'precipitationIntensity'
   ];
 
   return {
-    getCurrentDataFields(location: AmbLocation, fetchMidnight: DayJs) {
-      const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&timesteps=current&fields=${currentFields.join(',')}&apikey=${token}`
-      // logger.info(`Url is: ${url}`)
+    getCurrentDataFields(location: AmbLocation, timeParameters: string) {
+      const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&fields=${currentFields.join(',')}&${timeParameters}&apikey=${token}`
+      logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {
           const maybeParsedData = TomDataOrError.safeParse(r.data);
@@ -89,7 +96,7 @@ export const TomClient = (token: string) => {
           return maybeParsedData.data.data;
         })
         .catch(e => {
-          logger.error(`An error occured calling the pollen api: ${JSON.stringify(e)}`);
+          logger.error(`An error occured calling the day api: ${JSON.stringify(e)}`);
           throw new Error('An error occured calling the pollen api');
         });
     },
@@ -106,7 +113,7 @@ export const TomClient = (token: string) => {
           return maybeParsedData.data.data;
         })
         .catch(e => {
-          logger.error(`An error occured calling the pollen api: ${JSON.stringify(e)}`);
+          logger.error(`An error occured calling the time bound api: ${JSON.stringify(e)}`);
           throw new Error('An error occured calling the pollen api');
         });
     },

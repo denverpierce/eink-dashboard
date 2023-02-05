@@ -1,16 +1,26 @@
 <section class="day-forecast-section">
-  <style></style>
+  <style>
+    .remote {
+      display: flex;
+      flex-direction: column;
+      margin: 4rem auto;
+      text-align: center;
+    }
+  </style>
   <h2 class="header">Nederland</h2>
-  <div class="solar">
+  <div class="remote">
     {{#remote}}
     <span>{{ temperatureMin }} F/ {{ temperatureMax }} F</span>
     <span></span>
-    <span>{{ precipitationProbabilityAvg }} %</span>
-    <span>{{ windSpeedAvg }} mph ({{ windGust }} mph gusts)</span>
+    <span>{{ precipitationProbabilityAvg }} % Rain</span>
+    <span>{{ windSpeedAvg }} mph ({{ windGust }} gusts)</span>
     <span>
-      <i class="fa-solid fa-location-arrow" style="{{ windDirection }}"></i
+      <!-- The calc() below exists because the icon defaults to point at a 45 degree angle -->
+      <i
+        class="fa-solid fa-location-arrow"
+        style="transform: rotate(calc({{ windDirection }}deg - 45deg))"
+      ></i
     ></span>
-    <span>{{ windGust }}</span>
     {{/remote}}
   </div>
 </section>

@@ -8,8 +8,10 @@ import {
   apiPayloadToSolarTimes,
   apiPayloadToTenDay,
   tomDataArrayToObject,
-  apiPayloadToRemote
+  apiPayloadToRemote,
+  apiPayloadToHourlyGraph
 } from './api/sources/tom/tom.renderer';
+import dayjs from 'dayjs';
 
 const app = express()
 const port = 3000;
@@ -103,10 +105,11 @@ app.get('/remote', function (req, res) {
 
 app.get('/graph', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
-  renderer('src/render/views/graph.mst',
-    {
-      calendar: 1
-    }, function (err, result) {
+  const remote = apiPayloadToHourlyGraph(tomDataArrayToObject(allApiData));
+  renderer('src/render/views/graph.mst', {
+    graph: JSON.stringify(apiPayloadToHourlyGraph(tomDataArrayToObject(allApiData)))
+  },
+    function (err, result) {
       res.send(result)
     })
 });
