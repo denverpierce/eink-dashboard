@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import client from 'axios';
 import { number, z } from 'zod';
+import { getAxiosLog } from '../../ApiMain';
 import logger from '../../logging';
 import { AmbLocation } from '../amb/amb.service';
 
@@ -76,10 +77,16 @@ export const TomClient = (token: string) => {
     'precipitationIntensity'
   ];
 
+  const catchTomError = (e: any) => {
+    logger.error(`An error occured calling the tom api: ${getAxiosLog(e)}`);
+    // TODO some specific error code handling here
+    throw new Error('An error occured calling the tom api');
+  }
+
   return {
     getCurrentDataFields(location: AmbLocation, timeParameters: string) {
       const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&fields=${currentFields.join(',')}&${timeParameters}&apikey=${token}`
-      logger.info(`Url is: ${url}`)
+      // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {
           const maybeParsedData = TomDataOrError.safeParse(r.data);
@@ -95,14 +102,11 @@ export const TomClient = (token: string) => {
           }
           return maybeParsedData.data.data;
         })
-        .catch(e => {
-          logger.error(`An error occured calling the day api: ${JSON.stringify(e)}`);
-          throw new Error('An error occured calling the pollen api');
-        });
+        .catch(catchTomError);
     },
     getTimeBoundedFields(location: AmbLocation, timeParameters: string) {
       const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&fields=${timeBoundedFields.join(',')}&${timeParameters}&apikey=${token}`
-      logger.info(`Url is: ${url}`)
+      // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {
           const maybeParsedData = tomData.safeParse(r.data);
@@ -112,10 +116,7 @@ export const TomClient = (token: string) => {
           }
           return maybeParsedData.data.data;
         })
-        .catch(e => {
-          logger.error(`An error occured calling the time bound api: ${JSON.stringify(e)}`);
-          throw new Error('An error occured calling the pollen api');
-        });
+        .catch(catchTomError);
     },
   };
 };

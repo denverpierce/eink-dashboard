@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 
 test('Take Screenshot', async ({ page }) => {
   await page.goto('http://localhost:3000/');
