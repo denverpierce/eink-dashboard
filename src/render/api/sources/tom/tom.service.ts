@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import client from 'axios';
+import client, { AxiosError, isAxiosError } from 'axios';
 import { number, z } from 'zod';
 import { getAxiosLog } from '../../ApiMain';
 import logger from '../../logging';
@@ -78,8 +78,22 @@ export const TomClient = (token: string) => {
   ];
 
   const catchTomError = (e: any) => {
-    logger.error(`An error occured calling the tom api: ${getAxiosLog(e)}`);
-    // TODO some specific error code handling here
+    switch (e) {
+      case isAxiosError(e):
+        const axiosError = e as AxiosError;
+        if (axiosError.code && axiosError.code === '429001') {
+          logger.error('API Rate limit reached');
+        }
+        logger.error(`An error occured calling the tom api: ${getAxiosLog(axiosError)}`);
+        throw new Error('An error occured calling the tom api');
+      case e instanceof z.ZodError:
+        const zodError = e as z.ZodError;
+        logger.error(zodError.format())
+        break;
+      default:
+        logger.error(`An error occured calling the tom api: ${JSON.stringify(e)}`);
+        break;
+    }
     throw new Error('An error occured calling the tom api');
   }
 
@@ -89,18 +103,7 @@ export const TomClient = (token: string) => {
       // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {
-          const maybeParsedData = TomDataOrError.safeParse(r.data);
-          if (!maybeParsedData.success) {
-            logger.error(`Tom Pollen parsing error: ${JSON.stringify(maybeParsedData.error)}`)
-            throw new Error('Data didnt parse correctly');
-          }
-          if ('code' in maybeParsedData.data) {
-            if (maybeParsedData.data.code === 429001) {
-              throw new Error('API Rate limit reached');
-            }
-            throw new Error('Unknown api error occured');
-          }
-          return maybeParsedData.data.data;
+          return TomDataOrError.parse(r.data);
         })
         .catch(catchTomError);
     },
@@ -109,12 +112,7 @@ export const TomClient = (token: string) => {
       // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
         .then(r => {
-          const maybeParsedData = tomData.safeParse(r.data);
-          if (!maybeParsedData.success) {
-            logger.error(`Tom Pollen parsing error: ${JSON.stringify(maybeParsedData.error)}`)
-            throw new Error('Data didnt parse correctly')
-          }
-          return maybeParsedData.data.data;
+          return TomDataOrError.parse(r.data);
         })
         .catch(catchTomError);
     },
