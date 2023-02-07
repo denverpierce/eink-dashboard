@@ -16,8 +16,6 @@ import dayjs from 'dayjs';
 const app = express()
 const port = 3000;
 
-let tenDay: any[] = [];
-
 // TODO: types
 let allApiData: any[] = [];
 
@@ -50,6 +48,7 @@ app.engine('mst', mustacheExpress('views', '.mst'));
 
 app.get('/tenDay', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
+  console.log(allApiData)
   const tenDay = apiPayloadToTenDay(tomDataArrayToObject(allApiData));
   (renderer('src/render/views/tenDay_old.mst',
     {

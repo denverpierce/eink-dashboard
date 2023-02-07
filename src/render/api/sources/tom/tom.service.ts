@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import client, { AxiosError, isAxiosError } from 'axios';
-import { number, z } from 'zod';
+import client, { AxiosError, AxiosResponse, isAxiosError } from 'axios';
+import { number, z, ZodError } from 'zod';
 import { getAxiosLog } from '../../ApiMain';
 import logger from '../../logging';
 import { AmbLocation } from '../amb/amb.service';
@@ -59,6 +59,42 @@ export type TomData = z.infer<typeof tomTimelines>;
 type TomError = z.infer<typeof tomError>;
 const TomDataOrError = tomData.or(tomError)
 
+const catchTomError = (e: any) => {
+  switch (e) {
+    case isAxiosError(e):
+      const axiosError = e as AxiosError;
+      logger.error(`A error occured fetching the tom api: ${getAxiosLog(axiosError)}`);
+      throw new Error('An error occured fetching the tom api');
+    case 'issues' in e:
+      const zodError = e as z.ZodError;
+      logger.error('An error ocured parsing the api response')
+      logger.error(zodError.format())
+      break;
+    case 'cause' in e:
+      const apiError = e as TomError;
+      if (apiError.code && apiError.code === 429001) {
+        // I dont think this gets here due to an axios error upstack
+        logger.error('API Rate limit reached');
+      }
+      logger.error(`An error was returned by the API: ${JSON.stringify(e)}`);
+      break;
+    default:
+      logger.error(`An error occured calling the tom api: ${JSON.stringify(e)}`);
+      break;
+  }
+  throw new Error('An error occured calling the tom api');
+}
+
+const parseApiReturn = (reponseData: AxiosResponse<unknown, any>): TomData => {
+  console.log(reponseData.data)
+  const parsedApiData = TomDataOrError.parse(reponseData.data);
+  if ('code' in parsedApiData) {
+    // TODO: make this work correctly, and log based on return
+    throw new Error('API error', { cause: 'api' });
+  }
+  return parsedApiData.data;
+}
+
 // eslint-disable-next-line import/prefer-default-export,@typescript-eslint/explicit-module-boundary-types
 export const TomClient = (token: string) => {
   const TOM_API = 'https://api.tomorrow.io';
@@ -77,43 +113,19 @@ export const TomClient = (token: string) => {
     'precipitationIntensity'
   ];
 
-  const catchTomError = (e: any) => {
-    switch (e) {
-      case isAxiosError(e):
-        const axiosError = e as AxiosError;
-        if (axiosError.code && axiosError.code === '429001') {
-          logger.error('API Rate limit reached');
-        }
-        logger.error(`An error occured calling the tom api: ${getAxiosLog(axiosError)}`);
-        throw new Error('An error occured calling the tom api');
-      case e instanceof z.ZodError:
-        const zodError = e as z.ZodError;
-        logger.error(zodError.format())
-        break;
-      default:
-        logger.error(`An error occured calling the tom api: ${JSON.stringify(e)}`);
-        break;
-    }
-    throw new Error('An error occured calling the tom api');
-  }
-
   return {
     getCurrentDataFields(location: AmbLocation, timeParameters: string) {
       const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&fields=${currentFields.join(',')}&${timeParameters}&apikey=${token}`
       // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
-        .then(r => {
-          return TomDataOrError.parse(r.data);
-        })
+        .then(parseApiReturn)
         .catch(catchTomError);
     },
     getTimeBoundedFields(location: AmbLocation, timeParameters: string) {
       const url = `${TOM_API}/v4/timelines?location=${location.lat},${location.lng}&units=imperial&fields=${timeBoundedFields.join(',')}&${timeParameters}&apikey=${token}`
       // logger.info(`Url is: ${url}`)
       return httpClient.get<unknown>(url)
-        .then(r => {
-          return TomDataOrError.parse(r.data);
-        })
+        .then(parseApiReturn)
         .catch(catchTomError);
     },
   };
