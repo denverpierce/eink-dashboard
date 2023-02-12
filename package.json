@@ -9,7 +9,7 @@
     "build": "tsc -p ./tsconfig.json",
     "watch": "tsc -w",
     "prestart": "tsc -p ./tsconfig.json",
-    "generateImage":"npx playwright test",
+    "generateImage": "npx playwright test",
     "startAndGenerateImage": "npm start && npx playwright test"
   },
   "author": "",
@@ -29,7 +29,7 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.29.2",
+    "@playwright/test": "1.23",
     "@types/lodash": "^4.14.191",
     "@types/mustache-express": "^1.2.2"
   }
