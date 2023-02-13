@@ -48,7 +48,6 @@ app.engine('mst', mustacheExpress('views', '.mst'));
 
 app.get('/tenDay', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
-  console.log(allApiData)
   const tenDay = apiPayloadToTenDay(tomDataArrayToObject(allApiData));
   (renderer('src/render/views/tenDay_old.mst',
     {
@@ -83,9 +82,10 @@ app.get('/airQuality', function (req, res) {
 
 app.get('/calendar', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
+  const calendar = tomDataArrayToObject(allApiData);
   renderer('src/render/views/calendar.mst',
     {
-      calendar: 1
+      calendar
     }, function (err, result) {
       res.send(result)
     })

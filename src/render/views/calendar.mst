@@ -1,11 +1,12 @@
 <section class="day-forecast-section">
-    <style>
-      .calendar-list {
-        padding: 0 2.5rem;
-      }
+  <style>
+    .calendar-list {
+      padding: 0 2.5rem;
+    }
 
-  ul, ol{
-        list-style: none;
+    ul,
+    ol {
+      list-style: none;
     }
     li {
       background: #454545;
@@ -15,7 +16,7 @@
       padding-left: 0px;
       position: relative;
       border-radius: 0em 2px 1em 0em;
-      padding-left: 3.0em;
+      padding-left: 3em;
       font-size: 1.2em;
     }
     .calendar-icon {
@@ -28,22 +29,19 @@
       color: #454545;
     }
 
-
-    li:nth-child(even){
-        background-color: #b1b1b1;
+    li:nth-child(even) {
+      background-color: #b1b1b1;
     }
-    li:nth-child(even) .calendar-icon{
-        color: #b1b1b1;
+    li:nth-child(even) .calendar-icon {
+      color: #b1b1b1;
     }
-    </style>
-    <h2 class="header">Calendar</h2>
-    <div class="calendar-list">
-      {{#calendar}}
-      <ul>
-        <li><i class="fa-regular fa-calendar calendar-icon"></i>Kendra's Birthday</li>
-        <li><i class="fa-regular fa-calendar calendar-icon"></i>Kendra's Birthday</li>
-        <li><i class="fa-regular fa-calendar calendar-icon"></i>Kendra's Birthday</li>
-      </ul>
-      {{/calendar}}
-    </div>
+  </style>
+  <h2 class="header">Calendar</h2>
+  <div class="calendar-list">
+    {{#calendar}}
+    <ul>
+      <li><i class="fa-regular fa-calendar calendar-icon"></i>{{ summary }}</li>
+    </ul>
+    {{/calendar}}
+  </div>
 </section>

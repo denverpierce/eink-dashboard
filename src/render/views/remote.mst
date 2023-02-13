@@ -5,6 +5,7 @@
       flex-direction: column;
       margin: 4rem auto;
       text-align: center;
+      font-size: 2rem;
     }
   </style>
   <h2 class="header">Nederland</h2>

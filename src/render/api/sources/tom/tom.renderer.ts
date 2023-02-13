@@ -23,7 +23,8 @@ export const tomDataArrayToObject = (tomData: TomData[]) => {
     current: tomData[0],
     timeBound: tomData[1],
     timeBoundDay: tomData[2],
-    remote: tomData[3]
+    remote: tomData[3],
+    calendar: tomData[4]
   }
 }
 
@@ -34,6 +35,7 @@ const pollenKeys = {
 }
 
 export const apiPayloadToAirQuality = (tomData: ReturnType<typeof tomDataArrayToObject>) => {
+  console.log(tomData)
   const currentTimeValues = tomData.current.timelines[0].intervals[0].values;
 
   const pollenIndexToLabelMap = mapValues(pollenKeys, (_v, key) => {
@@ -117,5 +119,24 @@ export const apiPayloadToHourlyGraph = (tomData: ReturnType<typeof tomDataArrayT
   return {
     temperature: mappedTemperatrue,
     precipitation: mappedPrecipitation
+  }
+}
+
+export const apiPayloadToCalendar = (tomData: ReturnType<typeof tomDataArrayToObject>) => {
+  const currentTimeValues = tomData.current.timelines[0].intervals[0].values;
+
+  const pollenIndexToLabelMap = mapValues(pollenKeys, (_v, key) => {
+    return tomPollenIndexToLabelMap[currentTimeValues[key]]
+  });
+  const pollenLabelMap = mapKeys(pollenIndexToLabelMap, (_v, key) => key.replace('IndexMax', 'Label'));
+
+  if (currentTimeValues.epaIndexMax) {
+    // this has a different mapping, so apply it here
+    pollenLabelMap['epaLabel'] = epaIndexToLabel(currentTimeValues.epaIndexMax)
+  }
+
+  return {
+    ...tomData.current.timelines[0].intervals[0].values,
+    ...pollenLabelMap
   }
 }

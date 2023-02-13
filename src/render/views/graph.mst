@@ -10,7 +10,7 @@
         chart: {
             marginBottom: 40,
             marginRight: 10,
-            marginTop: 30,
+            marginTop: 15,
             plotBorderWidth: 0,
             height: 300,
             width: 900,
@@ -38,7 +38,10 @@
             //offset: 30,
             showLastLabel: false,
             labels: {
-                format: '{value:%l %p}'
+                format: '{value:%l %p}',
+                style: {
+                    fontSize: '16px'
+                },
             },
             crosshair: true
         }, { // Top X axis
@@ -49,7 +52,10 @@
                 format: '{value:<span style="font-size: 16px; font-weight: bold">%a</span> %b %e}',
                 align: 'left',
                 x: 3,
-                y: 8
+                y: 8,
+                style: {
+                    fontSize: '16px'
+                },
             },
             opposite: true,
             tickLength: 20,
@@ -63,12 +69,12 @@
             labels: {
                 format: '{value}°',
                 style: {
-                    fontSize: '16px'
+                    fontSize: '20px'
                 },
                 x: -3
             },
             plotLines: [{ // zero plane
-                value: 0,
+                value: 32,
                 color: '#BBBBBB',
                 width: 4,
                 zIndex: 2

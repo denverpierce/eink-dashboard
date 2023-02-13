@@ -2,6 +2,7 @@ import type { Dayjs } from "dayjs";
 import { tomClient } from "../ApiMain"
 import { getOneDayTimeQuery } from "../time.utils";
 import { AmbLocation } from "./amb/amb.service"
+import { fetchEventsFromGoogleCalendar } from "./glg/glg.service";
 
 export interface DataFetchConfig {
   primaryLocation: AmbLocation,
@@ -28,10 +29,13 @@ export const getAllApiData = async (fetchConfig: DataFetchConfig) => {
     lat: fetchConfig.remoteLocation.lat,
     lng: fetchConfig.remoteLocation.lng,
   }, getOneDayTimeQuery(fetchConfig.fetchTime));
+  // const gCalendarPromise = fetchEventsFromGoogleCalendar(fetchConfig);
+
   return Promise.all([
     currentDataFields,
     currentTimeBoundFields,
     tenDayTimeBoundFields,
-    remoteTimeBoundFields
+    remoteTimeBoundFields,
+    // gCalendarPromise
   ])
 }
