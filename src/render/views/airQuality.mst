@@ -16,6 +16,9 @@
       top: -45px;
       font-size: 1.5rem;
     }
+    .pollen-text {
+      inline-size: 64px;
+    }
   </style>
   <h2 class="header">Air Quality</h2>
   <div class="pollen">

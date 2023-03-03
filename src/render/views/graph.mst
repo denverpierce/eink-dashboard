@@ -8,13 +8,18 @@
 
     Highcharts.chart('container', {
         chart: {
-            marginBottom: 40,
+            marginBottom: 30,
             marginRight: 10,
-            marginTop: 15,
+            marginTop: 35,
             plotBorderWidth: 0,
             height: 300,
             width: 900,
             alignTicks: false
+        },
+        time: {
+            // getTimezoneOffset minutes to apply to incoming utc data
+            // number in minutes, with positive being West of Grenwich, negative being East
+            timezoneOffset: 360
         },
 
         title: {
@@ -24,18 +29,18 @@
         credits: {
             enabled: false
         },
-        xAxis: [{ // Bottom X axis
+        xAxis: [{ 
+            // Bottom X axis with hours
             type: 'datetime',
             // tickInterval: 36e5, // two hours
             minorTickInterval: 36e5, // one hour
             tickLength: 0,
             gridLineWidth: 2,
-            gridLineColor: 'rgba(128, 128, 128, 0.1)',
+            gridLineColor: 'rgba(128, 128, 128, 0.2)',
             startOnTick: false,
             endOnTick: false,
             minPadding: 0,
             maxPadding: 0,
-            //offset: 30,
             showLastLabel: false,
             labels: {
                 format: '{value:%l %p}',
@@ -44,22 +49,25 @@
                 },
             },
             crosshair: true
-        }, { // Top X axis
+        }, { 
+            // Top X axis with dates
             linkedTo: 0,
             type: 'datetime',
             tickInterval: 24 * 3600 * 1000,
             labels: {
-                format: '{value:<span style="font-size: 16px; font-weight: bold">%a</span> %b %e}',
+                format: '{value:<span style="font-size: 20px; font-weight: bold">%A</span>}',
                 align: 'left',
-                x: 3,
-                y: 8,
+                x: 6,
+                y: 17,
                 style: {
-                    fontSize: '16px'
+                    fontSize: '20px',
                 },
             },
             opposite: true,
             tickLength: 20,
-            gridLineWidth: 1
+            tickWidth: 6,
+            tickColor: '#e6e6e6',
+            gridLineWidth: 6
         }],
 
         yAxis: [{ // temperature axis
@@ -73,8 +81,8 @@
                 },
                 x: -3
             },
-            plotLines: [{ // zero plane
-                value: 32,
+            plotLines: [{ // show line for freezing in farenheight
+                value: 32, 
                 color: '#BBBBBB',
                 width: 4,
                 zIndex: 2
@@ -95,7 +103,6 @@
             tickLength: 0,
             minRange: 10,
             min: 0
-
         }],
 
         legend: {

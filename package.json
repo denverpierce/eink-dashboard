@@ -4,7 +4,6 @@
   "description": "Dashboard HTML generator for home dashboard app",
   "main": "index.ts",
   "scripts": {
-    "test": "test.ts",
     "start": "node --watch bin/src/render/main.js",
     "build": "tsc -p ./tsconfig.json",
     "watch": "tsc -w",

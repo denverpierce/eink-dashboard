@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import client, { AxiosError, AxiosResponse, isAxiosError } from 'axios';
+import client, { Axios, AxiosError, AxiosResponse, isAxiosError } from 'axios';
 import { number, z, ZodError } from 'zod';
 import { getAxiosLog } from '../../ApiMain';
 import logger from '../../logging';
@@ -14,8 +14,7 @@ const tomValue = z.object({
   treeIndexMax: tomIndexValues.optional(),
   weedIndexMax: tomIndexValues.optional(),
   grassIndexMax: tomIndexValues.optional(),
-  epaIndex: z.number().optional(),
-  epaIndexMax: z.number().optional(),
+  epaHealthConcernMax: z.number().optional(),
   sunriseTime: z.string().optional(),
   sunsetTime: z.string().optional(),
   /** Per the request, in Farenheight */
@@ -61,10 +60,15 @@ const TomDataOrError = tomData.or(tomError)
 
 const catchTomError = (e: any) => {
   switch (e) {
-    case isAxiosError(e):
+    case e.data && e.data.code && e.data.code === 429001:
+      // TODO: make this catch correctly
+      logger.error('API Rate limit reached');
+      break;
+    case e.name === "AxiosError":
+      logger.log('-----------------------------------')
       const axiosError = e as AxiosError;
-      logger.error(`A error occured fetching the tom api: ${getAxiosLog(axiosError)}`);
-      throw new Error('An error occured fetching the tom api');
+      logger.error(`A http error occured fetching the tom api: ${getAxiosLog(axiosError)}`);
+      break;
     case 'issues' in e:
       const zodError = e as z.ZodError;
       logger.error('An error ocured parsing the api response')
@@ -82,15 +86,14 @@ const catchTomError = (e: any) => {
       logger.error(`An error occured calling the tom api: ${JSON.stringify(e)}`);
       break;
   }
-  throw new Error('An error occured calling the tom api');
+  throw new Error('An unclassified error occured calling the tom api');
 }
 
 const parseApiReturn = (reponseData: AxiosResponse<unknown, any>): TomData => {
-  console.log(reponseData.data)
   const parsedApiData = TomDataOrError.parse(reponseData.data);
   if ('code' in parsedApiData) {
     // TODO: make this work correctly, and log based on return
-    throw new Error('API error', { cause: 'api' });
+    throw new Error('API error fall through thing', { cause: 'api' });
   }
   return parsedApiData.data;
 }
@@ -101,7 +104,7 @@ export const TomClient = (token: string) => {
   const httpClient = client.create();
 
   // TODO: make configurable
-  const currentFields = ['treeIndexMax', 'grassIndexMax', 'weedIndexMax', 'epaIndexMax', 'sunriseTime', 'sunsetTime'];
+  const currentFields = ['treeIndexMax', 'grassIndexMax', 'weedIndexMax', 'epaHealthConcernMax', 'sunriseTime', 'sunsetTime'];
   const timeBoundedFields = [
     'temperatureMax',
     'temperatureMin',

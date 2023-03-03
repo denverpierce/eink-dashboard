@@ -1,0 +1,6 @@
+<section class="meta">
+  <style></style>
+  {{#meta}}
+  <span>Data update at: {{ fetchTimeFormatted }}</span>
+  {{/meta}}
+</section>

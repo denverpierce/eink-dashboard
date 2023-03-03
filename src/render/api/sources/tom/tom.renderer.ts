@@ -1,7 +1,16 @@
 import { head, map, mapKeys, mapValues } from 'lodash';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import logger from '../../logging';
 import { TomData } from './tom.service';
+import { DataFetchConfig } from '../Fetcher';
+
+// dayjs timezone extensions
+dayjs.extend(utc); // required by 'timezone'
+dayjs.extend(timezone);
+
+dayjs.tz.setDefault(dayjs.tz.guess())
 
 const tomPollenIndexToLabelMap = {
   [0]: 'None',
@@ -12,10 +21,13 @@ const tomPollenIndexToLabelMap = {
   [5]: 'Very High'
 }
 
-const epaIndexToLabel = (epaIndex: number): string => {
-  // epaIndex goes from 0-301
-  const normalizedIndex = Math.round(epaIndex / 60.2);
-  return tomPollenIndexToLabelMap[normalizedIndex]
+const tomEpaHealthConcernLabelMap = {
+  [0]: 'Good',
+  [1]: 'Moderate',
+  [2]: 'Unhealthy for Sensitive Groups',
+  [3]: 'Unhealthy for All',
+  [4]: 'Very Unhealthy',
+  [5]: 'Hazardous'
 }
 
 export const tomDataArrayToObject = (tomData: TomData[]) => {
@@ -35,7 +47,6 @@ const pollenKeys = {
 }
 
 export const apiPayloadToAirQuality = (tomData: ReturnType<typeof tomDataArrayToObject>) => {
-  console.log(tomData)
   const currentTimeValues = tomData.current.timelines[0].intervals[0].values;
 
   const pollenIndexToLabelMap = mapValues(pollenKeys, (_v, key) => {
@@ -43,9 +54,10 @@ export const apiPayloadToAirQuality = (tomData: ReturnType<typeof tomDataArrayTo
   });
   const pollenLabelMap = mapKeys(pollenIndexToLabelMap, (_v, key) => key.replace('IndexMax', 'Label'));
 
-  if (currentTimeValues.epaIndexMax) {
-    // this has a different mapping, so apply it here
-    pollenLabelMap['epaLabel'] = epaIndexToLabel(currentTimeValues.epaIndexMax)
+  if (currentTimeValues.epaHealthConcernMax) {
+    // apply epa health concern labels
+    pollenLabelMap['epaLabel'] = tomEpaHealthConcernLabelMap[currentTimeValues.epaHealthConcernMax];
+    pollenLabelMap['epaIndexMax'] = currentTimeValues.epaHealthConcernMax;
   }
 
   return {
@@ -123,20 +135,13 @@ export const apiPayloadToHourlyGraph = (tomData: ReturnType<typeof tomDataArrayT
 }
 
 export const apiPayloadToCalendar = (tomData: ReturnType<typeof tomDataArrayToObject>) => {
-  const currentTimeValues = tomData.current.timelines[0].intervals[0].values;
-
-  const pollenIndexToLabelMap = mapValues(pollenKeys, (_v, key) => {
-    return tomPollenIndexToLabelMap[currentTimeValues[key]]
-  });
-  const pollenLabelMap = mapKeys(pollenIndexToLabelMap, (_v, key) => key.replace('IndexMax', 'Label'));
-
-  if (currentTimeValues.epaIndexMax) {
-    // this has a different mapping, so apply it here
-    pollenLabelMap['epaLabel'] = epaIndexToLabel(currentTimeValues.epaIndexMax)
-  }
-
   return {
     ...tomData.current.timelines[0].intervals[0].values,
-    ...pollenLabelMap
+  }
+}
+
+export const fetchConfigToMeta = (fetchConfig: Pick<DataFetchConfig, 'fetchTime'>) => {
+  return {
+    fetchTimeFormatted: fetchConfig.fetchTime.format('h:mm a, MMM D, YYYY')
   }
 }

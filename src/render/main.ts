@@ -1,5 +1,4 @@
 import type { GeoJSON } from 'geojson';
-import client from 'axios';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
 import { DataFetchConfig, getAllApiData } from './api/sources/Fetcher';
@@ -9,7 +8,8 @@ import {
   apiPayloadToTenDay,
   tomDataArrayToObject,
   apiPayloadToRemote,
-  apiPayloadToHourlyGraph
+  apiPayloadToHourlyGraph,
+  fetchConfigToMeta
 } from './api/sources/tom/tom.renderer';
 import dayjs from 'dayjs';
 
@@ -19,7 +19,8 @@ const port = 3000;
 // TODO: types
 let allApiData: any[] = [];
 
-app.use(express.static('src/render/public'))
+app.use(express.static('src/render/public'));
+
 app.get('/', async function (req, res) {
   const now = dayjs();
   console.log('Fetching data with a start time of: ', now.toISOString());
@@ -46,6 +47,44 @@ app.get('/', async function (req, res) {
 // Register '.mustache' extension with mustache-express
 app.engine('mst', mustacheExpress('views', '.mst'));
 
+app.get('/meta', function (_req, res) {
+  var renderer = mustacheExpress('views', '.mst');
+
+  // TODO: fix this so that we don't recreate fetchTime here,
+  // as it's not directly connected to the fetched time
+  const meta = fetchConfigToMeta({ fetchTime: dayjs() });
+  renderer('src/render/views/meta.mst',
+    {
+      meta
+    }, function (err, result) {
+      res.send(result)
+    })
+});
+
+app.get('/calendar', function (req, res) {
+  var renderer = mustacheExpress('views', '.mst');
+  const calendar = tomDataArrayToObject(allApiData);
+  renderer('src/render/views/calendar.mst',
+    {
+      calendar
+    }, function (err, result) {
+      res.send(result)
+    })
+});
+
+app.get('/airQuality', function (req, res) {
+  var renderer = mustacheExpress('views', '.mst');
+  const airQuality = apiPayloadToAirQuality(tomDataArrayToObject(allApiData));
+  console.log(airQuality)
+  renderer('src/render/views/airQuality.mst',
+    {
+      airQuality
+    }, function (err, result) {
+      err ? console.log(err) : undefined;
+      res.send(result)
+    })
+});
+
 app.get('/tenDay', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
   const tenDay = apiPayloadToTenDay(tomDataArrayToObject(allApiData));
@@ -67,26 +106,13 @@ app.get('/solar', function (req, res) {
     }));
 });
 
-app.get('/airQuality', function (req, res) {
+app.get('/graph', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
-  const airQuality = apiPayloadToAirQuality(tomDataArrayToObject(allApiData));
-  // console.log(airQuality)
-  renderer('src/render/views/airQuality.mst',
-    {
-      airQuality
-    }, function (err, result) {
-      err ? console.log(err) : undefined;
-      res.send(result)
-    })
-});
-
-app.get('/calendar', function (req, res) {
-  var renderer = mustacheExpress('views', '.mst');
-  const calendar = tomDataArrayToObject(allApiData);
-  renderer('src/render/views/calendar.mst',
-    {
-      calendar
-    }, function (err, result) {
+  const remote = apiPayloadToHourlyGraph(tomDataArrayToObject(allApiData));
+  renderer('src/render/views/graph.mst', {
+    graph: JSON.stringify(apiPayloadToHourlyGraph(tomDataArrayToObject(allApiData)))
+  },
+    function (err, result) {
       res.send(result)
     })
 });
@@ -98,17 +124,6 @@ app.get('/remote', function (req, res) {
     {
       remote
     }, function (err, result) {
-      res.send(result)
-    })
-});
-
-app.get('/graph', function (req, res) {
-  var renderer = mustacheExpress('views', '.mst');
-  const remote = apiPayloadToHourlyGraph(tomDataArrayToObject(allApiData));
-  renderer('src/render/views/graph.mst', {
-    graph: JSON.stringify(apiPayloadToHourlyGraph(tomDataArrayToObject(allApiData)))
-  },
-    function (err, result) {
       res.send(result)
     })
 });
