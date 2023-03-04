@@ -6,7 +6,6 @@ npm-debug.log*
 
 # Dependency directories
 node_modules/
-bin/
 src/render/bin/main.js
 /test-results/
 /playwright-report/
