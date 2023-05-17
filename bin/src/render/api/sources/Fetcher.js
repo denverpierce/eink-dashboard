@@ -15,7 +15,7 @@ const getAllApiData = async (fetchConfig) => {
     const tenDayTimeBoundFields = ApiMain_1.tomClient.getTimeBoundedFields({
         lat: fetchConfig.primaryLocation.lat,
         lng: fetchConfig.primaryLocation.lng,
-    }, 'endTime=nowPlus9d&timesteps=1d');
+    }, 'endTime=nowPlus5d&timesteps=1d');
     const remoteTimeBoundFields = ApiMain_1.tomClient.getTimeBoundedFields({
         lat: fetchConfig.remoteLocation.lat,
         lng: fetchConfig.remoteLocation.lng,
