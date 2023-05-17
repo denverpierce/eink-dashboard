@@ -24,7 +24,7 @@ export const getAllApiData = async (fetchConfig: DataFetchConfig) => {
   const tenDayTimeBoundFields = tomClient.getTimeBoundedFields({
     lat: fetchConfig.primaryLocation.lat,
     lng: fetchConfig.primaryLocation.lng,
-  }, 'endTime=nowPlus9d&timesteps=1d');
+  }, 'endTime=nowPlus5d&timesteps=1d');
   const remoteTimeBoundFields = tomClient.getTimeBoundedFields({
     lat: fetchConfig.remoteLocation.lat,
     lng: fetchConfig.remoteLocation.lng,
