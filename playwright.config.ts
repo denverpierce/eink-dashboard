@@ -30,10 +30,7 @@ const config: PlaywrightTestConfig = {
         deviceScaleFactor: 1.0,
         isMobile: false,
         hasTouch: false,
-        defaultBrowserType: 'chromium',
-        launchOptions: {
-          executablePath: '/usr/lib/chromium/chromium',
-        },
+        defaultBrowserType: 'chromium'
       },
     }
   ],
