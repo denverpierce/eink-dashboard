@@ -7,7 +7,6 @@
     "start": "node --watch bin/src/render/main.js",
     "build": "tsc -p ./tsconfig.json",
     "watch": "tsc -w",
-    "prestart": "tsc -p ./tsconfig.json",
     "generateImage": "npx playwright test",
     "startAndGenerateImage": "npm start && npx playwright test"
   },
