@@ -86,7 +86,7 @@
     }]
 });
   </script>
-  <h2 class="header">Ten Day Forecast</h2>
+  <h2 class="header">Five Day Forecast</h2>
   <figure class="highcharts-figure">
     <div id="tenDay" style="height:100%,width:100%">
       <div id="loading">

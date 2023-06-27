@@ -119,9 +119,17 @@ const apiPayloadToHourlyGraph = (tomData) => {
             int.values.precipitationIntensity
         ];
     });
+    const mappedTemperatureApparent = tomData.timeBound.timelines[0].intervals.map((int) => {
+        return [
+            // highcharts expects epoch time in milliseconds, not seconds
+            (0, dayjs_1.default)(int.startTime).unix() * 1000,
+            int.values.temperatureApparentAvg
+        ];
+    });
     return {
         temperature: mappedTemperatrue,
-        precipitation: mappedPrecipitation
+        precipitation: mappedPrecipitation,
+        temperatureApparent: mappedTemperatureApparent
     };
 };
 exports.apiPayloadToHourlyGraph = apiPayloadToHourlyGraph;

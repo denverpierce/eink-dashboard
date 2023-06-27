@@ -23,6 +23,8 @@ const tomValue = z.object({
   temperatureMin: z.number().optional(),
   /** Per the request, in Farenheight */
   temperatureAvg: z.number().optional(),
+  /** Per the request, in Farenheight */
+  temperatureApparentAvg: z.number().optional(),
   precipitationProbabilityAvg: z.number().optional(),
   /** In Miles Per Hour */
   windSpeedAvg: z.number().optional(),
@@ -109,6 +111,7 @@ export const TomClient = (token: string) => {
     'temperatureMax',
     'temperatureMin',
     'temperatureAvg',
+    'temperatureApparentAvg',
     'precipitationProbabilityAvg',
     'windSpeedAvg',
     'windDirection',

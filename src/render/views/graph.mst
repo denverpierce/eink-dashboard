@@ -10,7 +10,7 @@
         chart: {
             marginBottom: 30,
             marginRight: 10,
-            marginTop: 35,
+            marginTop: 25,
             plotBorderWidth: 0,
             height: 300,
             width: 900,
@@ -124,6 +124,28 @@
             data: weatherData.temperature,
             type: 'spline',
                         marker: {
+                enabled: false,
+                states: {
+                    hover: {
+                        enabled: true
+                    }
+                }
+            },
+            tooltip: {
+                pointFormat: '<span style="color:{point.color}">\u25CF</span> ' +
+                    '{series.name}: <b>{point.y}°C</b><br/>'
+            },
+            zIndex: 1,
+            color: '#FF0000',
+            negativeColor: '#48AFE8'
+        },
+        {
+            name: 'Temperature Apparent',
+            yAxis: 0,
+            data: weatherData.temperatureApparent,
+            type: 'spline',
+            dashStyle: 'LongDash',
+            marker: {
                 enabled: false,
                 states: {
                     hover: {

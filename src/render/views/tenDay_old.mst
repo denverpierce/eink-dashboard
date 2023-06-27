@@ -54,7 +54,7 @@
       flex-direction: column;
     }
   </style>
-  <h2 class="header">Ten Day Forecast</h2>
+  <h2 class="header">Five Day Forecast</h2>
   <div class="day-forecast-days">
     {{#days}}
     <div class="day-forecast-day">
