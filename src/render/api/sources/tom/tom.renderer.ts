@@ -1,4 +1,4 @@
-import { head, map, mapKeys, mapValues } from 'lodash';
+import { head, isNil, map, mapKeys, mapValues } from 'lodash';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -31,6 +31,7 @@ const tomEpaHealthConcernLabelMap = {
 }
 
 export const tomDataArrayToObject = (tomData: TomData[]) => {
+  // mapping from array returns to object keys
   return {
     current: tomData[0],
     timeBound: tomData[1],
@@ -40,6 +41,7 @@ export const tomDataArrayToObject = (tomData: TomData[]) => {
   }
 }
 
+// start with an empty pollen object to fill in later
 const pollenKeys = {
   weedIndexMax: 0,
   grassIndexMax: 0,
@@ -54,7 +56,7 @@ export const apiPayloadToAirQuality = (tomData: ReturnType<typeof tomDataArrayTo
   });
   const pollenLabelMap = mapKeys(pollenIndexToLabelMap, (_v, key) => key.replace('IndexMax', 'Label'));
 
-  if (currentTimeValues.epaHealthConcernMax) {
+  if (!isNil(currentTimeValues.epaHealthConcernMax)) {
     // apply epa health concern labels
     pollenLabelMap['epaLabel'] = tomEpaHealthConcernLabelMap[currentTimeValues.epaHealthConcernMax];
     pollenLabelMap['epaIndexMax'] = currentTimeValues.epaHealthConcernMax;

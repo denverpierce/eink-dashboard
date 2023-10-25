@@ -8,9 +8,9 @@
 
     Highcharts.chart('container', {
         chart: {
-            marginBottom: 30,
-            marginRight: 10,
-            marginTop: 25,
+            marginBottom: 60,
+            marginRight: 0,
+            marginTop: 20,
             plotBorderWidth: 0,
             height: 300,
             width: 900,
@@ -45,7 +45,7 @@
             labels: {
                 format: '{value:%l %p}',
                 style: {
-                    fontSize: '16px'
+                    fontSize: '28px'
                 },
             },
             crosshair: true
@@ -60,7 +60,7 @@
                 x: 6,
                 y: 17,
                 style: {
-                    fontSize: '20px',
+                    fontSize: '28px',
                 },
             },
             opposite: true,
@@ -100,8 +100,7 @@
                 enabled: false
             },
             gridLineWidth: 0,
-            tickLength: 0,
-            minRange: 10,
+            tickLength: 0.1,
             min: 0
         }],
 
@@ -178,9 +177,10 @@
                     value: 0
                 },
                 style: {
-                    fontSize: '16px',
+                    fontSize: '28px',
                     color: '#666'
-                }
+                },
+                format: "{y} in"
             },
             tooltip: {
                 valueSuffix: ' in'

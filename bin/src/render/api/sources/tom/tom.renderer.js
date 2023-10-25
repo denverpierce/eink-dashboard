@@ -29,6 +29,7 @@ const tomEpaHealthConcernLabelMap = {
     [5]: 'Hazardous'
 };
 const tomDataArrayToObject = (tomData) => {
+    // mapping from array returns to object keys
     return {
         current: tomData[0],
         timeBound: tomData[1],
@@ -38,6 +39,7 @@ const tomDataArrayToObject = (tomData) => {
     };
 };
 exports.tomDataArrayToObject = tomDataArrayToObject;
+// start with an empty pollen object to fill in later
 const pollenKeys = {
     weedIndexMax: 0,
     grassIndexMax: 0,
@@ -49,7 +51,7 @@ const apiPayloadToAirQuality = (tomData) => {
         return tomPollenIndexToLabelMap[currentTimeValues[key]];
     });
     const pollenLabelMap = (0, lodash_1.mapKeys)(pollenIndexToLabelMap, (_v, key) => key.replace('IndexMax', 'Label'));
-    if (currentTimeValues.epaHealthConcernMax) {
+    if (!(0, lodash_1.isNil)(currentTimeValues.epaHealthConcernMax)) {
         // apply epa health concern labels
         pollenLabelMap['epaLabel'] = tomEpaHealthConcernLabelMap[currentTimeValues.epaHealthConcernMax];
         pollenLabelMap['epaIndexMax'] = currentTimeValues.epaHealthConcernMax;

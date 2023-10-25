@@ -10,14 +10,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 163px;
     }
     .pollen-count {
       position: relative;
-      top: -45px;
-      font-size: 1.5rem;
+      top: -49px;
+      font-size: 2rem;
     }
     .pollen-text {
-      inline-size: 64px;
+      font-size: 2rem;
     }
   </style>
   <h2 class="header">Air Quality</h2>
