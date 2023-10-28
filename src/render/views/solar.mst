@@ -3,7 +3,7 @@
     .solar {
       display: flex;
       flex-direction: column;
-      margin: 0 3.2rem;
+      margin: 0 1rem;
     }
 
     .solar-item {
@@ -14,10 +14,10 @@
 
     .solar-item svg,
     .solar-item i {
-      height: 50%;
+      height: 60%;
       margin: auto;
       width: 118px;
-      line-height: 150%;
+      line-height: 127%;
       color: hsl(0deg 0% 50%);
       stroke: hsl(0deg 0% 50%);
     }
@@ -68,7 +68,7 @@
     </div>
     <div class="solar-item">
       <span>{{daylightLength}}</span>
-      <i class="fa-regular fa-fw fa-2x fa-sun"></i>
+      <i class="fa-regular fa-fw fa-3x fa-sun"></i>
     </div>
     {{/solar}}
   </div>

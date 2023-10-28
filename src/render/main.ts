@@ -1,4 +1,3 @@
-import type { GeoJSON } from 'geojson';
 import express from 'express';
 import mustacheExpress from 'mustache-express';
 import { DataFetchConfig, getAllApiData } from './api/sources/Fetcher';
@@ -24,6 +23,8 @@ app.use(express.static('src/render/public'));
 app.get('/', async function (req, res) {
   const now = dayjs();
   console.log('Fetching data with a start time of: ', now.toISOString());
+
+  // Primary application configuration is done in this object
   const dataFechConfig: DataFetchConfig = {
     primaryLocation: {
       lat: 32.9,

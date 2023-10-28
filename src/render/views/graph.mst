@@ -41,7 +41,6 @@
             endOnTick: false,
             minPadding: 0,
             maxPadding: 0,
-            showLastLabel: false,
             labels: {
                 format: '{value:%l %p}',
                 style: {
