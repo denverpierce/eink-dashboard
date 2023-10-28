@@ -16,6 +16,7 @@ app.use(express_1.default.static('src/render/public'));
 app.get('/', async function (req, res) {
     const now = (0, dayjs_1.default)();
     console.log('Fetching data with a start time of: ', now.toISOString());
+    // Primary application configuration is done in this object
     const dataFechConfig = {
         primaryLocation: {
             lat: 32.9,
