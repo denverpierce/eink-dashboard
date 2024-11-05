@@ -8,7 +8,7 @@
       font-size: 2rem;
     }
   </style>
-  <h2 class="header">Nederland</h2>
+  <h2 class="header">Buena Vista</h2>
   <div class="remote">
     {{#remote}}
     <span>{{ temperatureMin }} F/ {{ temperatureMax }} F</span>

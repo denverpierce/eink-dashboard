@@ -31,8 +31,8 @@ app.get('/', async function (req, res) {
       lng: -96.7
     },
     remoteLocation: {
-      lat: 39.9,
-      lng: -105.5
+      lat: 38.84,
+      lng: -106.13
     },
     fetchTime: now
   }
@@ -76,7 +76,7 @@ app.get('/calendar', function (req, res) {
 app.get('/airQuality', function (req, res) {
   var renderer = mustacheExpress('views', '.mst');
   const airQuality = apiPayloadToAirQuality(tomDataArrayToObject(allApiData));
-  console.log(airQuality)
+
   renderer('src/render/views/airQuality.mst',
     {
       airQuality
